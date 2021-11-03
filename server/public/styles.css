@@ -1,8 +1,35 @@
+img {
+  object-fit: cover;
+}
+
 .icon-x-large {
   font-size: x-large;
 }
 
-.app-drawer {
-  top: 0;
-  left: 0;
+.primary-square,
+.secondary-square {
+  border: 2.5px solid black;
+  border-radius: 2px;
+}
+
+.primary-square {
+  width: 2rem;
+  height: 2rem;
+}
+
+.secondary-square {
+  width: 1.5rem;
+  height: 1.5rem;
+}
+
+.fa-square {
+  font-size: xx-large;
+}
+
+.bottom-container {
+  height: 10rem;
+}
+
+.camera-img {
+  bottom: 7.5rem;
 }

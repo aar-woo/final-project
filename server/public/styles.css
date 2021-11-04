@@ -1,5 +1,6 @@
 img {
   object-fit: cover;
+  max-height: 17rem;
 }
 
 .icon-x-large {

@@ -1,6 +1,6 @@
 import React from 'react';
 
-export default class UploadForm extends React.Component {
+export default class UploadForm0 extends React.Component {
   // constructor(props) {
   //   super(props);
   // }

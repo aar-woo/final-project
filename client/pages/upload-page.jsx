@@ -22,6 +22,9 @@ export default class UploadPage extends React.Component {
           <div className="row text-center mt-5 d-sm-none">
             <h3>or</h3>
           </div>
+          {/* <div className="row text-center mt-5 d-sm-none">
+            <h3>or</h3>
+          </div>
           <div className="container bottom-container fixed-bottom bg-dark d-flex justify-content-center text-center d-sm-none">
             <div className="camera-img position-fixed">
               <label htmlFor="camera-capture" className="">
@@ -35,7 +38,7 @@ export default class UploadPage extends React.Component {
                 <input className="d-none" type="file" id="camera-capture" accept="image/*" capture />
               </div>
             </div>
-          </div>
+          </div> */}
         </div>
       </>
     );

@@ -47,6 +47,7 @@ export default class UploadForm extends React.Component {
 
   render() {
     return (
+      <>
       <div className="row g-0">
         <div className="col-md-6 col-lg-5">
           <img src={this.state.imgFile} id="imgFile" className="card-img-top border border-dark" onLoad={this.handleImgLoad}/>
@@ -80,6 +81,23 @@ export default class UploadForm extends React.Component {
           </form>
         </div>
       </div>
+
+      <div className="container bottom-container fixed-bottom bg-dark d-flex justify-content-center text-center d-sm-none">
+        <div className="camera-img position-fixed">
+          <label htmlFor="camera-capture" className="">
+            <img src="images/camera.png" className="w-25" />
+          </label>
+        </div>
+        <div className="row mt-5">
+          <div className="col-12">
+            <button type="button" className="btn btn-secondary">
+              <label htmlFor="camera-capture">Take A Photo</label></button>
+              <input className="d-none" type="file" id="camera-capture" accept="image/*" capture onChange={this.handleFileSelect}/>
+          </div>
+        </div>
+      </div>
+    </>
+
     );
 
   }

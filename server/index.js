@@ -4,6 +4,7 @@ const errorMiddleware = require('./error-middleware');
 const staticMiddleware = require('./static-middleware');
 const pg = require('pg');
 const ClientError = require('./client-error');
+const uploadsMiddleware = require('./uploads-middleware');
 
 const db = new pg.Pool({
   connectionString: process.env.DATABASE_URL,
@@ -16,18 +17,20 @@ const app = express();
 
 app.use(express.json());
 
-app.post('/api/inventory/1', function (req, res, next) {
-  const { userId, imgUrl, articleTypeId, primaryColor, secondaryColor, colorCategoryId, secondaryColorCategoryId } = req.body;
-  if (!userId || !imgUrl || !articleTypeId || !primaryColor || !colorCategoryId) {
-    throw new ClientError(401, 'Invalid article, must include userId, imgUrl, articleTypeId, primaryColor, and colorCategoryId are requried.');
+app.post('/api/inventory/1', uploadsMiddleware, (req, res, next) => {
+  const { articleTypeId, primaryColor, secondaryColor, colorCategoryId, secondaryColorCategoryId } = req.body;
+  if (!articleTypeId || !primaryColor || !colorCategoryId) {
+    throw new ClientError(401, 'Invalid article, must include articleTypeId, primaryColor, and colorCategoryId are required.');
   }
+  const imgUrl = `/images/${req.file.filename}`;
+
   const insertSql = `
     insert into "articles" ("userId", "imgUrl", "articleTypeId", "primaryColor",
                             "secondaryColor", "colorCategoryId", "secondaryColorCategoryId")
                     values ($1, $2, $3, $4, $5, $6, $7)
                   returning *
   `;
-  const insertParams = [userId, imgUrl, articleTypeId, primaryColor, secondaryColor, colorCategoryId, secondaryColorCategoryId];
+  const insertParams = [1, imgUrl, articleTypeId, primaryColor, secondaryColor, colorCategoryId, secondaryColorCategoryId];
   db.query(insertSql, insertParams)
     .then(result => {
       const [article] = result.rows;

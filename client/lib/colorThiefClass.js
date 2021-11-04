@@ -19,6 +19,12 @@ export default class getColors {
     return rgb;
   }
 
+  getSecondaryRgbArr(img) {
+    const palette = colorThief.getPalette(img);
+    const secondaryRgbArr = palette[0];
+    return secondaryRgbArr;
+  }
+
   getPaletteRgb(img) {
     const palette = [];
     const paletteRaw = colorThief.getPalette(img);

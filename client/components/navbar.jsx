@@ -10,10 +10,6 @@ export default class Navbar extends React.Component {
 
   }
 
-  openAppDrawer() {
-
-  }
-
   render() {
     return (
       <nav className="navbar p-3 bg-dark m-0">

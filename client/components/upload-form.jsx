@@ -1,5 +1,7 @@
 import React from 'react';
 import ColorThiefClass from '../lib/colorThiefClass';
+import categorizeColor from '../lib/categorizeColor';
+import colorConvert from 'color-convert';
 
 const colorThief = new ColorThiefClass();
 
@@ -7,15 +9,22 @@ export default class UploadForm extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      value: '',
       imgFile: 'images/hoodieOutline.png',
       imgLoaded: false,
       primaryColorRgb: '',
-      secondaryColorRgb: ''
+      secondaryColorRgb: '',
+      colorCategory: '',
+      colorCategoryId: null,
+      secondaryColorCategory: '',
+      secondaryColorCategoryId: null,
+      articleType: '',
+      articleTypeId: null
     };
+    this.fileInputRef = React.createRef();
     this.handleFileSelect = this.handleFileSelect.bind(this);
     this.handleImgLoad = this.handleImgLoad.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
+    this.handleTypeSelect = this.handleTypeSelect.bind(this);
   }
 
   handleFileSelect(event) {
@@ -31,18 +40,71 @@ export default class UploadForm extends React.Component {
       return;
     }
     const $img = document.querySelector('#imgFile');
-    const primaryColorRgb = `rgb${colorThief.getRgb($img)}`;
+
+    const primaryColorRgb = `rgb${colorThief.getRgb($img)}`; // rgb(0, 0, 0)
     const secondaryColorRgb = `rgb${colorThief.getPaletteRgb($img)[0]}`;
+    const colorCategorized = categorizeColor(colorConvert.rgb.hsl(colorThief.getRgbArr($img)));
+    const secondaryColorCategorized = categorizeColor(colorThief.getSecondaryRgbArr($img));
 
     this.setState({
       imgLoaded: true,
       primaryColorRgb,
-      secondaryColorRgb
+      secondaryColorRgb,
+      colorCategory: colorCategorized.color,
+      colorCategoryId: colorCategorized.id,
+      secondaryColorCategory: secondaryColorCategorized.color,
+      secondaryColorCategoryId: secondaryColorCategorized.id
+    });
+  }
+
+  handleTypeSelect(event) {
+    const articleType = event.target.value;
+    let articleTypeId;
+    if (articleType === 'top') {
+      articleTypeId = 1;
+    }
+    if (articleType === 'bottom') {
+      articleTypeId = 2;
+    } else {
+      articleTypeId = 3;
+    }
+    this.setState({
+      articleType,
+      articleTypeId
     });
   }
 
   handleSubmit(event) {
     event.preventDefault();
+    const formData = new FormData();
+    formData.append('colorCategoryId', this.state.colorCategoryId);
+    formData.append('secondaryColorCategoryId', this.state.secondaryColorCategoryId);
+    formData.append('primaryColor', this.state.primaryColorRgb);
+    formData.append('secondaryColor', this.state.secondaryColorRgb);
+    formData.append('articleTypeId', this.state.articleTypeId);
+    formData.append('image', this.fileInputRef.current.files[0]);
+
+    fetch('/api/inventory/1', {
+      method: 'POST',
+      body: formData
+    })
+      .then(result => result.json())
+      .then(data => {
+        this.setState({
+          imgFile: 'images/hoodieOutline.png',
+          imgLoaded: false,
+          primaryColorRgb: '',
+          secondaryColorRgb: '',
+          colorCategory: '',
+          colorCategoryId: null,
+          secondaryColorCategory: '',
+          secondaryColorCategoryId: null,
+          articleType: '',
+          articleTypeId: null
+        });
+        this.fileInputRef.current.value = null;
+      })
+      .catch(err => console.error(err));
   }
 
   render() {
@@ -50,15 +112,15 @@ export default class UploadForm extends React.Component {
       <>
       <div className="row g-0">
         <div className="col-md-6 col-lg-5">
-          <img src={this.state.imgFile} id="imgFile" className="card-img-top border border-dark" onLoad={this.handleImgLoad}/>
+          <img aria-required src={this.state.imgFile} id="imgFile" className="card-img-top border border-dark" onLoad={this.handleImgLoad}/>
         </div>
         <div className="col-md-6 col-lg-7">
-          <form>
+          <form onSubmit={this.handleSubmit}>
             <div className="card-body">
-              <input className="form-control" type="file" id="formFile" onChange={this.handleFileSelect}></input>
+              <input className="form-control" type="file" id="formFile" ref={this.fileInputRef} onChange={this.handleFileSelect}></input>
               <div className="row mt-2 align-items-end">
                 <div className="col-8 col-md-12">
-                  <select className="form-select">
+                  <select aria-required className="form-select" value={this.state.articleType} onChange={this.handleTypeSelect}>
                     <option defaultValue="">Article Type</option>
                     <option value="top">Top</option>
                     <option value="bottom">Bottom</option>
@@ -74,7 +136,7 @@ export default class UploadForm extends React.Component {
                   </div>
                 </div>
                 <div className="col-sm-12 col-md-9 d-flex justify-content-end mt-2">
-                  <button type="submit" className="btn btn-primary btn-sm pt-1" onSubmit={this.handleSubmit}>Upload</button>
+                  <button type="submit" className="btn btn-primary btn-sm pt-1">Upload</button>
                 </div>
               </div>
             </div>

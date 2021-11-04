@@ -5,12 +5,13 @@ insert into "colorCategories" ("colorCategoryId", "colorCategory")
   values (1, 'black'),
          (2, 'white'),
          (3, 'grey'),
-         (4, 'green'),
-         (5, 'blue'),
-         (6, 'red'),
-         (7, 'magenta'),
-         (8, 'yellow'),
-         (9, 'khaki');
+         (4, 'red'),
+         (5, 'yellow'),
+         (6, 'green'),
+         (7, 'cyan'),
+         (8, 'blue'),
+         (9, 'magenta'),
+         (10, 'khaki');
 
 insert into "articleTypes" ("articleTypeId", "articleType")
   values (1, 'top'),

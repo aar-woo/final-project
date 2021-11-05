@@ -82,13 +82,13 @@ export default class UploadForm extends React.Component {
     });
   }
 
-  handleTypeSelect(event) { // FIX ME
+  handleTypeSelect(event) {
     const articleType = event.target.value;
+
     let articleTypeId;
     if (articleType === 'top') {
       articleTypeId = 1;
-    }
-    if (articleType === 'bottom') {
+    } else if (articleType === 'bottom') {
       articleTypeId = 2;
     } else {
       articleTypeId = 3;

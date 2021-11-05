@@ -1,10 +1,10 @@
 img {
   object-fit: cover;
-  max-height: 17rem;
+  max-height: 20rem;
 }
 
-.icon-x-large {
-  font-size: x-large;
+select {
+  cursor: pointer;
 }
 
 .primary-square,
@@ -21,10 +21,6 @@ img {
 .secondary-square {
   width: 1.5rem;
   height: 1.5rem;
-}
-
-.fa-square {
-  font-size: xx-large;
 }
 
 .bottom-container {

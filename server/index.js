@@ -18,21 +18,23 @@ const app = express();
 app.use(express.json());
 
 app.post('/api/inventory/1', uploadsMiddleware, (req, res, next) => {
-  const { articleTypeId, primaryColor, secondaryColor, colorCategoryId, secondaryColorCategoryId } = req.body;
+  const {
+    articleTypeId, primaryColor, secondaryColor, colorCategoryId, secondaryColorCategoryId
+  } = req.body;
   if (!articleTypeId || !primaryColor || !colorCategoryId) {
-    throw new ClientError(401, 'Invalid article, must include articleTypeId, primaryColor, and colorCategoryId are required.');
+    throw new ClientError(401, 'Invalid article, articleTypeId, primaryColor, and colorCategoryId are required.');
   }
 
   const imgUrl = `/images/${req.file.filename}`;
 
-  const insertSql = `
-    insert into "articles" ("userId", "imgUrl", "articleTypeId", "primaryColor",
-                            "secondaryColor", "colorCategoryId", "secondaryColorCategoryId")
-                    values ($1, $2, $3, $4, $5, $6, $7)
-                  returning *
+  const sql = `
+  insert into "articles" ("userId", "imgUrl", "articleTypeId", "primaryColor",
+                          "secondaryColor", "colorCategoryId", "secondaryColorCategoryId")
+              values ($1, $2, $3, $4, $5, $6, $7)
+              returning *
   `;
-  const insertParams = [1, imgUrl, articleTypeId, primaryColor, secondaryColor, colorCategoryId, secondaryColorCategoryId];
-  db.query(insertSql, insertParams)
+  const params = [1, imgUrl, articleTypeId, primaryColor, secondaryColor, colorCategoryId, secondaryColorCategoryId];
+  db.query(sql, params)
     .then(result => {
       const [article] = result.rows;
       res.status(201).json(article);

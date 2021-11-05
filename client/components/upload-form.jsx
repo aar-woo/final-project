@@ -30,6 +30,7 @@ export default class UploadForm extends React.Component {
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleTypeSelect = this.handleTypeSelect.bind(this);
     this.handleColorSelect = this.handleColorSelect.bind(this);
+    this.handleColorBlockClick = this.handleColorBlockClick.bind(this);
   }
 
   fileChangedHandler(event) {
@@ -103,6 +104,29 @@ export default class UploadForm extends React.Component {
 
   handleColorSelect(event) {
     // console.log('color selected');
+    const colorSelected = event.target.value;
+    if (this.state.colorCategorySelect === 'Primary') {
+      this.setState({
+        colorCategory: colorSelected
+      });
+    } else {
+      this.setState({
+        secondaryColorCategory: colorSelected
+      });
+    }
+
+  }
+
+  handleColorBlockClick(event) {
+    if (event.target.matches('.secondary-square')) {
+      this.setState({
+        colorCategorySelect: 'Secondary'
+      });
+    } else {
+      this.setState({
+        colorCategorySelect: 'Primary'
+      });
+    }
   }
 
   handleSubmit(event) {
@@ -152,16 +176,17 @@ export default class UploadForm extends React.Component {
                 <h5 className="d-none d-sm-block"><u className="d-sm-none d-md-block">Upload</u></h5>
                 <input className="form-control" type="file" name="image" ref={this.fileInputRef} onChange={this.fileChangedHandler}></input>
                 <div className="row mt-3 align-items-end align-items-lg-start">
-                    <ColorSelect divClasses="col-8 d-block d-lg-none" colorCategory={this.state.colorCategory} value={this.state.colorCategory} colorCategorySelect={this.state.colorCategorySelect} onChange={this.handleColorSelect}/>
-                  <div className="col-4 col-lg-1 d-flex align-items-end align-items-lg-start ps-xs-0 ps-md-0 justify-content-around flex-lg-column mt-2 mt-lg-0">
-                    <div className="primary-square" style={{ backgroundColor: `${this.state.primaryColorRgb}` }}>
-                    </div>
-                    <div className="secondary-square mt-3" style={{ backgroundColor: `${this.state.secondaryColorRgb}` }}>
-                    </div>
+                    <ColorSelect divClasses="col-8 d-block d-lg-none" colorCategory={this.state.colorCategory} value={this.state.colorCategory}
+                      colorCategorySelect={this.state.colorCategorySelect} onChange={this.handleColorSelect}/>
+                  <div className="col-4 col-lg-1 d-flex align-items-end align-items-lg-start ps-xs-0 ps-md-0 justify-content-around flex-lg-column mt-2 mt-lg-0" onClick={this.handleColorBlockClick}>
+                    <div className="primary-square" style={{ backgroundColor: `${this.state.primaryColorRgb}` }}></div>
+                    <div className="secondary-square mt-3" style={{ backgroundColor: `${this.state.secondaryColorRgb}` }}></div>
                   </div>
                   <div className="col-lg-5 ms-2">
-                    <ColorSelect divClasses="col-12 d-none d-lg-block" colorCategory={this.state.colorCategory} value={this.state.colorCategory} colorCategorySelect={this.state.colorCategorySelect} onChange={this.handleColorSelect} />
-                    <ColorSelect divClasses="col-12 d-none d-lg-block mt-2" colorCategory={this.state.secondaryColorCategory} value={this.state.secondaryColorCategory} colorCategorySelect={this.state.colorCategorySelect} onChange={this.handleColorSelect} />
+                    <ColorSelect divClasses="col-12 d-none d-lg-block" colorCategory={this.state.colorCategory} value={this.state.colorCategory}
+                      colorCategorySelect={this.state.colorCategorySelect} onChange={this.handleColorSelect} />
+                    <ColorSelect divClasses="col-12 d-none d-lg-block mt-2" colorCategory={this.state.secondaryColorCategory} value={this.state.secondaryColorCategory}
+                      colorCategorySelect={this.state.colorCategorySelect} onChange={this.handleColorSelect} />
                   </div>
                   <div className="col-12 col-lg-5 d-flex d-lg-block">
                     <div className="col-8 col-lg-12 pe-2 pe-lg-0">
@@ -172,12 +197,10 @@ export default class UploadForm extends React.Component {
                         <option value="shoes">Shoes</option>
                       </select>
                     </div>
-
                     <div className="col-4 col-lg-12 d-flex justify-content-end mt-2">
                       <button type="submit" className="btn btn-primary btn-sm pt-1">Upload</button>
                     </div>
                   </div>
-
                 </div>
               </div>
             </form>

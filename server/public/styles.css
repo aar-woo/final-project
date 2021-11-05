@@ -1,0 +1,32 @@
+img {
+  object-fit: cover;
+  max-height: 20rem;
+}
+
+select {
+  cursor: pointer;
+}
+
+.primary-square,
+.secondary-square {
+  border: 2.5px solid black;
+  border-radius: 2px;
+}
+
+.primary-square {
+  width: 2rem;
+  height: 2rem;
+}
+
+.secondary-square {
+  width: 1.5rem;
+  height: 1.5rem;
+}
+
+.bottom-container {
+  height: 10rem;
+}
+
+.camera-img {
+  bottom: 7.5rem;
+}

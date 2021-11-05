@@ -22,6 +22,7 @@ app.post('/api/inventory/1', uploadsMiddleware, (req, res, next) => {
   if (!articleTypeId || !primaryColor || !colorCategoryId) {
     throw new ClientError(401, 'Invalid article, must include articleTypeId, primaryColor, and colorCategoryId are required.');
   }
+
   const imgUrl = `/images/${req.file.filename}`;
 
   const insertSql = `

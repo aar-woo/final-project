@@ -2,6 +2,7 @@ import React from 'react';
 import ColorThiefClass from '../lib/colorThiefClass';
 import categorizeColor from '../lib/categorizeColor';
 import colorConvert from 'color-convert';
+import Resizer from 'react-image-file-resizer';
 
 const colorThief = new ColorThiefClass();
 
@@ -9,7 +10,8 @@ export default class UploadForm extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      imgFile: 'images/hoodieOutline.png',
+      img: 'images/hoodieOutline.png',
+      imgFile: null,
       imgLoaded: false,
       primaryColorRgb: '',
       secondaryColorRgb: '',
@@ -21,27 +23,50 @@ export default class UploadForm extends React.Component {
       articleTypeId: null
     };
     this.fileInputRef = React.createRef();
-    this.handleFileSelect = this.handleFileSelect.bind(this);
+    this.fileChangedHandler = this.fileChangedHandler.bind(this);
     this.handleImgLoad = this.handleImgLoad.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleTypeSelect = this.handleTypeSelect.bind(this);
   }
 
-  handleFileSelect(event) {
-    const imgFile = URL.createObjectURL(event.target.files[0]);
+  fileChangedHandler(event) {
+    const img = URL.createObjectURL(event.target.files[0]);
     this.setState({
-      imgFile,
+      img,
       imgLoaded: false
     });
+    let fileInput = false;
+    if (event.target.files[0]) {
+      fileInput = true;
+    }
+    if (fileInput) {
+      try {
+        Resizer.imageFileResizer(
+          event.target.files[0],
+          400,
+          400,
+          'JPEG',
+          100,
+          0,
+          uri => {
+            this.setState({ imgFile: uri });
+          },
+          'file',
+          200,
+          200
+        );
+      } catch (err) {
+        console.error(err);
+      }
+    }
   }
 
   handleImgLoad(event) {
-    if (this.state.imgFile === 'images/hoodieOutline.png') {
+    if (this.state.img === 'images/hoodieOutline.png') {
       return;
     }
-    const $img = document.querySelector('#imgFile');
-
-    const primaryColorRgb = `rgb${colorThief.getRgb($img)}`; // rgb(0, 0, 0)
+    const $img = document.querySelector('#img');
+    const primaryColorRgb = `rgb${colorThief.getRgb($img)}`;
     const secondaryColorRgb = `rgb${colorThief.getPaletteRgb($img)[0]}`;
     const colorCategorized = categorizeColor(colorConvert.rgb.hsl(colorThief.getRgbArr($img)));
     const secondaryColorCategorized = categorizeColor(colorThief.getSecondaryRgbArr($img));
@@ -57,7 +82,7 @@ export default class UploadForm extends React.Component {
     });
   }
 
-  handleTypeSelect(event) {
+  handleTypeSelect(event) { // FIX ME
     const articleType = event.target.value;
     let articleTypeId;
     if (articleType === 'top') {
@@ -82,7 +107,7 @@ export default class UploadForm extends React.Component {
     formData.append('primaryColor', this.state.primaryColorRgb);
     formData.append('secondaryColor', this.state.secondaryColorRgb);
     formData.append('articleTypeId', this.state.articleTypeId);
-    formData.append('image', this.fileInputRef.current.files[0]);
+    formData.append('image', this.state.imgFile);
 
     fetch('/api/inventory/1', {
       method: 'POST',
@@ -91,7 +116,8 @@ export default class UploadForm extends React.Component {
       .then(result => result.json())
       .then(data => {
         this.setState({
-          imgFile: 'images/hoodieOutline.png',
+          img: 'images/hoodieOutline.png',
+          imgFile: null,
           imgLoaded: false,
           primaryColorRgb: '',
           secondaryColorRgb: '',
@@ -112,12 +138,12 @@ export default class UploadForm extends React.Component {
       <>
       <div className="row g-0">
         <div className="col-md-6 col-lg-5">
-          <img aria-required src={this.state.imgFile} id="imgFile" className="card-img-top border border-dark" onLoad={this.handleImgLoad}/>
+          <img aria-required src={this.state.img} id="img" className="card-img-top border border-dark" onLoad={this.handleImgLoad}/>
         </div>
         <div className="col-md-6 col-lg-7">
           <form onSubmit={this.handleSubmit}>
             <div className="card-body">
-              <input className="form-control" type="file" id="formFile" ref={this.fileInputRef} onChange={this.handleFileSelect}></input>
+              <input className="form-control" type="file" name="image" ref={this.fileInputRef} onChange={this.fileChangedHandler}></input>
               <div className="row mt-2 align-items-end">
                 <div className="col-8 col-md-12">
                   <select aria-required className="form-select" value={this.state.articleType} onChange={this.handleTypeSelect}>

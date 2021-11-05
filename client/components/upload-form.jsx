@@ -22,7 +22,7 @@ export default class UploadForm extends React.Component {
       secondaryColorCategoryId: null,
       articleType: '',
       articleTypeId: null,
-      colorCategorySelect: 'Primary' // add to wherever setState() appears
+      colorCategorySelect: 'Primary'
     };
     this.fileInputRef = React.createRef();
     this.fileChangedHandler = this.fileChangedHandler.bind(this);
@@ -104,14 +104,51 @@ export default class UploadForm extends React.Component {
 
   handleColorSelect(event) {
     const colorSelected = event.target.value;
+    let colorId;
+    switch (colorSelected) {
+      case 'black':
+        colorId = 1;
+        break;
+      case 'white':
+        colorId = 2;
+        break;
+      case 'grey':
+        colorId = 3;
+        break;
+      case 'red':
+        colorId = 4;
+        break;
+      case 'yellow':
+        colorId = 5;
+        break;
+      case 'green':
+        colorId = 6;
+        break;
+      case 'cyan':
+        colorId = 7;
+        break;
+      case 'blue':
+        colorId = 8;
+        break;
+      case 'magenta':
+        colorId = 9;
+        break;
+      case 'khaki':
+        colorId = 10;
+        break;
+      default:
+        colorId = null;
+    }
     if (this.state.colorCategorySelect === 'Primary') {
       this.setState({
         colorCategory: colorSelected,
+        colorId,
         primaryColor: colorSelected
       });
     } else {
       this.setState({
         secondaryColorCategory: colorSelected,
+        secondaryColorCategoryId: colorId,
         secondaryColor: colorSelected
       });
     }
@@ -156,7 +193,8 @@ export default class UploadForm extends React.Component {
           secondaryColorCategory: '',
           secondaryColorCategoryId: null,
           articleType: '',
-          articleTypeId: null
+          articleTypeId: null,
+          colorCategorySelect: 'Primary'
         });
         this.fileInputRef.current.value = null;
       })
@@ -177,26 +215,26 @@ export default class UploadForm extends React.Component {
       <>
         <div className="row g-0">
           <div className="col-md-6 col-lg-5">
-            <img aria-required src={this.state.img} id="img" className="card-img-top img-thumbnail border-dark" onLoad={this.handleImgLoad}/>
+            <img src={this.state.img} id="img" className="card-img-top img-thumbnail border-dark" onLoad={this.handleImgLoad}/>
           </div>
           <div className="col-md-6 col-lg-7">
             <form onSubmit={this.handleSubmit}>
               <div className="card-body pb-md-0">
                 <h5 className="d-none d-sm-block"><u className="d-sm-none d-md-block">Upload</u></h5>
-                <input className="form-control" type="file" name="image" ref={this.fileInputRef} onChange={this.fileChangedHandler}></input>
+                <input aria-required className="form-control" type="file" name="image" ref={this.fileInputRef} onChange={this.fileChangedHandler}></input>
                 <div className="row mt-2 mt-lg-3 align-items-end align-items-lg-start justify-content-center">
-                    <ColorSelect divClasses={primaryColorSelect} colorCategory={this.state.colorCategory} value={this.state.colorCategory}
+                    <ColorSelect classes={primaryColorSelect} colorCategory={this.state.colorCategory} value={this.state.colorCategory}
                       colorCategorySelect='Primary' onChange={this.handleColorSelect}/>
-                    <ColorSelect divClasses={secondaryColorSelect} colorCategory={this.state.secondaryColorCategory} value={this.state.secondaryColorCategory}
+                    <ColorSelect classes={secondaryColorSelect} colorCategory={this.state.secondaryColorCategory} value={this.state.secondaryColorCategory}
                       colorCategorySelect='Secondary' onChange={this.handleColorSelect} />
                   <div className="col-4 col-lg-1 d-flex align-items-end align-items-lg-start ps-xs-0 ps-md-0 justify-content-around flex-lg-column mt-2 mt-lg-0" onClick={this.handleColorBlockClick}>
                     <div className="primary-square" style={{ backgroundColor: `${this.state.primaryColor}` }}></div>
                     <div className="secondary-square mt-3" style={{ backgroundColor: `${this.state.secondaryColor}` }}></div>
                   </div>
                   <div className="col-lg-5 ms-2">
-                    <ColorSelect divClasses="col-12 d-none d-lg-block" colorCategory={this.state.colorCategory} value={this.state.colorCategory}
+                    <ColorSelect classes="col-12 d-none d-lg-block" colorCategory={this.state.colorCategory} value={this.state.colorCategory}
                       colorCategorySelect='Primary' onChange={this.handleColorSelect} />
-                    <ColorSelect divClasses="secondary-select col-12 d-none d-lg-block mt-2" colorCategory={this.state.secondaryColorCategory} value={this.state.secondaryColorCategory}
+                    <ColorSelect classes="secondary-select col-12 d-none d-lg-block mt-2" colorCategory={this.state.secondaryColorCategory} value={this.state.secondaryColorCategory}
                       colorCategorySelect='Secondary' onChange={this.handleColorSelect} />
                   </div>
                   <div className="col-12 col-lg-5 d-flex d-lg-block pe-lg-0">

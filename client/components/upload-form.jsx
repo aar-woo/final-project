@@ -3,6 +3,7 @@ import ColorThiefClass from '../lib/colorThiefClass';
 import categorizeColor from '../lib/categorizeColor';
 import colorConvert from 'color-convert';
 import Resizer from 'react-image-file-resizer';
+import ColorSelect from './color-select';
 
 const colorThief = new ColorThiefClass();
 
@@ -15,18 +16,20 @@ export default class UploadForm extends React.Component {
       imgLoaded: false,
       primaryColorRgb: '',
       secondaryColorRgb: '',
-      colorCategory: '',
+      colorCategory: 'Color',
       colorCategoryId: null,
       secondaryColorCategory: '',
       secondaryColorCategoryId: null,
       articleType: '',
-      articleTypeId: null
+      articleTypeId: null,
+      colorCategorySelect: 'Primary' // add to wherever setState() appears
     };
     this.fileInputRef = React.createRef();
     this.fileChangedHandler = this.fileChangedHandler.bind(this);
     this.handleImgLoad = this.handleImgLoad.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleTypeSelect = this.handleTypeSelect.bind(this);
+    this.handleColorSelect = this.handleColorSelect.bind(this);
   }
 
   fileChangedHandler(event) {
@@ -98,6 +101,10 @@ export default class UploadForm extends React.Component {
     });
   }
 
+  handleColorSelect(event) {
+    // console.log('color selected');
+  }
+
   handleSubmit(event) {
     event.preventDefault();
     const formData = new FormData();
@@ -141,29 +148,36 @@ export default class UploadForm extends React.Component {
           </div>
           <div className="col-md-6 col-lg-7">
             <form onSubmit={this.handleSubmit}>
-              <div className="card-body">
+              <div className="card-body pb-md-0">
                 <h5 className="d-none d-sm-block"><u className="d-sm-none d-md-block">Upload</u></h5>
                 <input className="form-control" type="file" name="image" ref={this.fileInputRef} onChange={this.fileChangedHandler}></input>
-                <div className="row mt-2 align-items-end">
-                  <div className="col-8 col-md-12">
-                    <select aria-required className="form-select" value={this.state.articleType} onChange={this.handleTypeSelect}>
-                      <option defaultValue="">Article Type</option>
-                      <option value="top">Top</option>
-                      <option value="bottom">Bottom</option>
-                      <option value="shoes">Shoes</option>
-                    </select>
-                  </div>
-                  <div className="col-2 col-md-12 d-flex pe-0 mt-2">
+                <div className="row mt-3 align-items-end align-items-lg-start">
+                    <ColorSelect divClasses="col-8 d-block d-lg-none" colorCategory={this.state.colorCategory} value={this.state.colorCategory} colorCategorySelect={this.state.colorCategorySelect} onChange={this.handleColorSelect}/>
+                  <div className="col-4 col-lg-1 d-flex align-items-end align-items-lg-start ps-xs-0 ps-md-0 justify-content-around flex-lg-column mt-2 mt-lg-0">
                     <div className="primary-square" style={{ backgroundColor: `${this.state.primaryColorRgb}` }}>
                     </div>
-                  </div>
-                  <div className="col-2 col-md-3 d-flex mt-1">
-                    <div className="secondary-square" style={{ backgroundColor: `${this.state.secondaryColorRgb}` }}>
+                    <div className="secondary-square mt-3" style={{ backgroundColor: `${this.state.secondaryColorRgb}` }}>
                     </div>
                   </div>
-                  <div className="col-sm-12 col-md-9 d-flex justify-content-end mt-2">
-                    <button type="submit" className="btn btn-primary btn-sm pt-1">Upload</button>
+                  <div className="col-lg-5 ms-2">
+                    <ColorSelect divClasses="col-12 d-none d-lg-block" colorCategory={this.state.colorCategory} value={this.state.colorCategory} colorCategorySelect={this.state.colorCategorySelect} onChange={this.handleColorSelect} />
+                    <ColorSelect divClasses="col-12 d-none d-lg-block mt-2" colorCategory={this.state.secondaryColorCategory} value={this.state.secondaryColorCategory} colorCategorySelect={this.state.colorCategorySelect} onChange={this.handleColorSelect} />
                   </div>
+                  <div className="col-12 col-lg-5 d-flex d-lg-block">
+                    <div className="col-8 col-lg-12 pe-2 pe-lg-0">
+                      <select aria-required className="form-select mt-2 mt-lg-0" value={this.state.articleType} onChange={this.handleTypeSelect}>
+                        <option defaultValue="">Article Type</option>
+                        <option value="top">Top</option>
+                        <option value="bottom">Bottom</option>
+                        <option value="shoes">Shoes</option>
+                      </select>
+                    </div>
+
+                    <div className="col-4 col-lg-12 d-flex justify-content-end mt-2">
+                      <button type="submit" className="btn btn-primary btn-sm pt-1">Upload</button>
+                    </div>
+                  </div>
+
                 </div>
               </div>
             </form>

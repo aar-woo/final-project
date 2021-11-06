@@ -1,14 +1,26 @@
 import React from 'react';
 
 export default class Inventory extends React.Component {
-  // constructor(props) {
-  //   super(props);
-  // }
+  constructor(props) {
+    super(props);
+    this.state = { articles: [] };
+  }
+
+  componentDidMount() {
+    fetch('/api/inventory/1')
+      .then(res => res.json())
+      .then(articles => this.setState({ articles }));
+  }
 
   render() {
     return (
     <div className="row d-flex justify-content-center">
-        <Article articleInfo={{ imgUrl: 'images/image-1636073348785.JPEG' }} />
+      {
+        this.state.articles.map(article => (
+          <Article articleInfo={article} key={article.articleId}/>
+
+        ))
+      }
       <Article articleInfo={{ imgUrl: 'images/hoodiePlaceholder.png' }} />
       <Article articleInfo={{ imgUrl: 'images/hoodiePlaceholder.png' }} />
       <Article articleInfo={{ imgUrl: 'images/hoodiePlaceholder.png' }} />

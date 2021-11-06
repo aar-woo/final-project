@@ -2,7 +2,8 @@ insert into "users" ("userName", "password")
   values ('demo', 'password');
 
 insert into "colorCategories" ("colorCategoryId", "colorCategory")
-  values (1, 'black'),
+  values (0, 'none'),
+         (1, 'black'),
          (2, 'white'),
          (3, 'grey'),
          (4, 'red'),

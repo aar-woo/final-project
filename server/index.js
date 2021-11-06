@@ -46,7 +46,9 @@ app.use(staticMiddleware);
 
 app.get('/api/inventory/1', (req, res, next) => {
   const sql = `
-  select *
+  select "imgUrl",
+         "primaryColor",
+         "secondaryColor"
     from "articles"
     where "userId" = 1
   `;

@@ -1,8 +1,17 @@
 import React from 'react';
-import UploadPage from './pages/upload-page';
+import Inventory from './components/inventory';
+import Navbar from './components/navbar';
+// import UploadPage from './pages/upload-page';
 
 export default class App extends React.Component {
   render() {
-    return <UploadPage />;
+    return (
+      <>
+        <Navbar />
+        <Inventory />
+      </>
+    );
+    // return <UploadPage />;
+
   }
 }

@@ -104,45 +104,25 @@ export default class UploadForm extends React.Component {
 
   handleColorSelect(event) {
     const colorSelected = event.target.value;
-    let colorId;
-    switch (colorSelected) {
-      case 'black':
-        colorId = 1;
-        break;
-      case 'white':
-        colorId = 2;
-        break;
-      case 'grey':
-        colorId = 3;
-        break;
-      case 'red':
-        colorId = 4;
-        break;
-      case 'yellow':
-        colorId = 5;
-        break;
-      case 'green':
-        colorId = 6;
-        break;
-      case 'cyan':
-        colorId = 7;
-        break;
-      case 'blue':
-        colorId = 8;
-        break;
-      case 'magenta':
-        colorId = 9;
-        break;
-      case 'khaki':
-        colorId = 10;
-        break;
-      case 'none':
-        colorId = 0;
-    }
+    const colorIds = {
+      black: 1,
+      white: 2,
+      grey: 3,
+      red: 4,
+      yellow: 5,
+      green: 6,
+      cyan: 7,
+      blue: 8,
+      magenta: 9,
+      khaki: 10,
+      none: 0
+    };
+    const colorId = colorIds[colorSelected];
+
     if (this.state.colorCategorySelect === 'Primary') {
       this.setState({
         colorCategory: colorSelected,
-        colorId,
+        colorCategoryId: colorId,
         primaryColor: colorSelected
       });
     } else {

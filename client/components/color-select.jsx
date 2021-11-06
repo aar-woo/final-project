@@ -21,7 +21,7 @@ export default function ColorSelect(props) {
         <option value="blue">{props.colorCategorySelect + ': Blue'}</option>
         <option value="magenta">{props.colorCategorySelect + ': Magenta'}</option>
         <option value="khaki">{props.colorCategorySelect + ': Khaki'}</option>
-        <option className={optionNone} value="none">{props.colorCategorySelect + ': none'}</option>
+        <option className={optionNone} value="none">{props.colorCategorySelect + ': None'}</option>
       </select>
     </div>
   );

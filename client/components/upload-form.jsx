@@ -23,6 +23,7 @@ export default class UploadForm extends React.Component {
       articleType: '',
       articleTypeId: null,
       colorCategorySelect: 'Primary'
+
     };
     this.fileInputRef = React.createRef();
     this.fileChangedHandler = this.fileChangedHandler.bind(this);
@@ -30,7 +31,7 @@ export default class UploadForm extends React.Component {
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleTypeSelect = this.handleTypeSelect.bind(this);
     this.handleColorSelect = this.handleColorSelect.bind(this);
-    this.handleColorBlockClick = this.handleColorBlockClick.bind(this);
+    this.switchSelect = this.switchSelect.bind(this);
   }
 
   fileChangedHandler(event) {
@@ -154,7 +155,7 @@ export default class UploadForm extends React.Component {
     }
   }
 
-  handleColorBlockClick(event) {
+  switchSelect(event) {
     if (event.target.matches('.secondary-square') || event.target.matches('.secondary-select')) {
       this.setState({
         colorCategorySelect: 'Secondary'
@@ -223,19 +224,19 @@ export default class UploadForm extends React.Component {
                 <h5 className="d-none d-sm-block"><u className="d-sm-none d-md-block">Upload</u></h5>
                 <input aria-required className="form-control" type="file" name="image" ref={this.fileInputRef} onChange={this.fileChangedHandler}></input>
                 <div className="row mt-2 mt-lg-3 align-items-end align-items-lg-start justify-content-center">
-                    <ColorSelect classes={primaryColorSelect} colorCategory={this.state.colorCategory} value={this.state.colorCategory}
-                      colorCategorySelect='Primary' onChange={this.handleColorSelect}/>
-                    <ColorSelect classes={secondaryColorSelect} colorCategory={this.state.secondaryColorCategory} value={this.state.secondaryColorCategory}
-                      colorCategorySelect='Secondary' onChange={this.handleColorSelect} />
-                  <div className="col-4 col-lg-1 d-flex align-items-end align-items-lg-start ps-xs-0 ps-md-0 justify-content-around flex-lg-column mt-2 mt-lg-0" onClick={this.handleColorBlockClick}>
+                  <ColorSelect classes={primaryColorSelect} selectClasses='form-select' colorCategory={this.state.colorCategory} value={this.state.colorCategory}
+                    colorCategorySelect='Primary' onChange={this.handleColorSelect}/>
+                  <ColorSelect classes={secondaryColorSelect} selectClasses='form-select secondary-select' colorCategory={this.state.secondaryColorCategory} value={this.state.secondaryColorCategory}
+                    colorCategorySelect='Secondary' onChange={this.handleColorSelect} />
+                  <div className="col-4 col-lg-1 d-flex align-items-end align-items-lg-start ps-xs-0 ps-md-0 justify-content-around flex-lg-column mt-2 mt-lg-0" onClick={this.switchSelect}>
                     <div className="primary-square" style={{ backgroundColor: `${this.state.primaryColor}` }}></div>
                     <div className="secondary-square mt-3" style={{ backgroundColor: `${this.state.secondaryColor}` }}></div>
                   </div>
-                  <div className="col-lg-5 ms-2">
-                    <ColorSelect classes="col-12 d-none d-lg-block" colorCategory={this.state.colorCategory} value={this.state.colorCategory}
-                      colorCategorySelect='Primary' onChange={this.handleColorSelect} />
-                    <ColorSelect classes="secondary-select col-12 d-none d-lg-block mt-2" colorCategory={this.state.secondaryColorCategory} value={this.state.secondaryColorCategory}
-                      colorCategorySelect='Secondary' onChange={this.handleColorSelect} />
+                  <div className="col-lg-5 ms-2" onClick={this.switchSelect}>
+                    <ColorSelect classes="col-12 d-none d-lg-block" selectClasses='form-select' colorCategory={this.state.colorCategory} value={this.state.colorCategory}
+                      colorCategorySelect='Primary' onChange={this.handleColorSelect}/>
+                    <ColorSelect classes="secondary-select col-12 d-none d-lg-block mt-2" selectClasses='form-select secondary-select' colorCategory={this.state.secondaryColorCategory} value={this.state.secondaryColorCategory}
+                      colorCategorySelect='Secondary' onChange={this.handleColorSelect}/>
                   </div>
                   <div className="col-12 col-lg-5 d-flex d-lg-block pe-lg-0">
                     <div className="col-8 col-lg-12 pe-2 pe-lg-0">

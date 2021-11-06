@@ -23,7 +23,6 @@ export default class UploadForm extends React.Component {
       articleType: '',
       articleTypeId: null,
       colorCategorySelect: 'Primary'
-
     };
     this.fileInputRef = React.createRef();
     this.fileChangedHandler = this.fileChangedHandler.bind(this);
@@ -137,8 +136,8 @@ export default class UploadForm extends React.Component {
       case 'khaki':
         colorId = 10;
         break;
-      default:
-        colorId = null;
+      case 'none':
+        colorId = 0;
     }
     if (this.state.colorCategorySelect === 'Primary') {
       this.setState({
@@ -189,9 +188,9 @@ export default class UploadForm extends React.Component {
           imgLoaded: false,
           primaryColor: '',
           secondaryColor: '',
-          colorCategory: '',
+          colorCategory: 'Color',
           colorCategoryId: null,
-          secondaryColorCategory: '',
+          secondaryColorCategory: 'Color',
           secondaryColorCategoryId: null,
           articleType: '',
           articleTypeId: null,
@@ -220,19 +219,19 @@ export default class UploadForm extends React.Component {
           </div>
           <div className="col-md-6 col-lg-7">
             <form onSubmit={this.handleSubmit}>
-              <div className="card-body pb-md-0">
-                <h5 className="d-none d-sm-block"><u className="d-sm-none d-md-block">Upload</u></h5>
-                <input aria-required className="form-control" type="file" name="image" ref={this.fileInputRef} onChange={this.fileChangedHandler}></input>
-                <div className="row mt-2 mt-lg-3 align-items-end align-items-lg-start justify-content-center">
+              <div className="card-body">
+                <h5 className="d-none d-sm-block"><u>Upload</u></h5>
+                <input required className="form-control" type="file" name="image" ref={this.fileInputRef} onChange={this.fileChangedHandler}></input>
+                <div className="row mt-2 align-items-end align-items-lg-start justify-content-center">
                   <ColorSelect classes={primaryColorSelect} selectClasses='form-select' colorCategory={this.state.colorCategory} value={this.state.colorCategory}
                     colorCategorySelect='Primary' onChange={this.handleColorSelect}/>
                   <ColorSelect classes={secondaryColorSelect} selectClasses='form-select secondary-select' colorCategory={this.state.secondaryColorCategory} value={this.state.secondaryColorCategory}
                     colorCategorySelect='Secondary' onChange={this.handleColorSelect} />
                   <div className="col-4 col-lg-1 d-flex align-items-end align-items-lg-start ps-xs-0 ps-md-0 justify-content-around flex-lg-column mt-2 mt-lg-0" onClick={this.switchSelect}>
-                    <div className="primary-square" style={{ backgroundColor: `${this.state.primaryColor}` }}></div>
-                    <div className="secondary-square mt-3" style={{ backgroundColor: `${this.state.secondaryColor}` }}></div>
+                    <a><div className="primary-square" style={{ backgroundColor: `${this.state.primaryColor}` }}></div></a>
+                    <a><div className="secondary-square mt-3" style={{ backgroundColor: `${this.state.secondaryColor}` }}></div></a>
                   </div>
-                  <div className="col-lg-5 ms-2" onClick={this.switchSelect}>
+                  <div className="col-lg-5 ms-2 ps-2" onClick={this.switchSelect}>
                     <ColorSelect classes="col-12 d-none d-lg-block" selectClasses='form-select' colorCategory={this.state.colorCategory} value={this.state.colorCategory}
                       colorCategorySelect='Primary' onChange={this.handleColorSelect}/>
                     <ColorSelect classes="secondary-select col-12 d-none d-lg-block mt-2" selectClasses='form-select secondary-select' colorCategory={this.state.secondaryColorCategory} value={this.state.secondaryColorCategory}
@@ -240,7 +239,7 @@ export default class UploadForm extends React.Component {
                   </div>
                   <div className="col-12 col-lg-5 d-flex d-lg-block pe-lg-0">
                     <div className="col-8 col-lg-12 pe-2 pe-lg-0">
-                      <select aria-required className="form-select mt-2 mt-lg-0" value={this.state.articleType} onChange={this.handleTypeSelect}>
+                      <select required className="form-select mt-2 mt-lg-0" value={this.state.articleType} onChange={this.handleTypeSelect}>
                         <option defaultValue="">Article Type</option>
                         <option value="top">Top</option>
                         <option value="bottom">Bottom</option>

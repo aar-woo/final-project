@@ -8,9 +8,9 @@ export default function ColorSelect(props) {
     optionNone = 'd-none';
   }
   return (
-    <div className={props.classes} onChange={props.onChange} onClick={props.onClick}>
-      <select className={props.selectClasses}>
-        <option defaultValue={props.colorCategory}>{`${props.colorCategorySelect}: ${props.colorCategory}`}</option>
+    <div className={props.classes} onClick={props.onClick}>
+      <select className={props.selectClasses} value={props.colorCategory} onChange={props.onChange}>
+        <option value=''>{`${props.colorCategorySelect}: `}</option>
         <option value="black">{props.colorCategorySelect + ': Black'}</option>
         <option value="white">{props.colorCategorySelect + ': White'}</option>
         <option value="grey">{props.colorCategorySelect + ': Grey'}</option>

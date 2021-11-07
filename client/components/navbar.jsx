@@ -5,7 +5,6 @@ export default class Navbar extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      page: 'Upload',
       menuIsOpen: false
     };
     this.toggleMenu = this.toggleMenu.bind(this);
@@ -19,11 +18,11 @@ export default class Navbar extends React.Component {
     return (
       <>
         <nav className="navbar d-flex justify-content-start p-3 bg-dark m-0">
-            <a href="#" onClick={this.toggleMenu}>
+            <a onClick={this.toggleMenu}>
               <i className="text-white fas fa-bars icon-x-large" onClick={this.openAppDrawer}></i>
             </a>
           <li className="nav-item">
-            <h3 className="text-white d-inline">{this.state.page}</h3>
+            <h3 className="text-white d-inline">{this.props.pageHeader}</h3>
           </li>
         </nav>
         <AppDrawer isOpen={this.state.menuIsOpen} toggle={this.toggleMenu}/>

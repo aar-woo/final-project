@@ -6,7 +6,7 @@ export default function UploadPage(props) {
 
   return (
       <>
-        <Navbar />
+        <Navbar pageHeader='Upload' />
         <div className="container mt-4">
           <div className="row d-flex justify-content-center align-items-center">
             <div className="col-10 col-md-8">

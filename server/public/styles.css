@@ -7,6 +7,10 @@ select {
   cursor: pointer;
 }
 
+ul {
+  list-style-type: none;
+}
+
 .primary-square,
 .secondary-square {
   border: 2.5px solid black;
@@ -56,4 +60,9 @@ select {
 
 .icon-x-large {
   font-size: x-large;
+}
+
+li:hover {
+  color: white;
+  background-color: rgb(0 0 0 / 40%);
 }

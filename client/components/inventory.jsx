@@ -4,7 +4,8 @@ export default class Inventory extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      articles: []
+      articles: [],
+      articleType: 'all'
     };
     this.handleTypeSelect = this.handleTypeSelect.bind(this);
   }
@@ -18,15 +19,34 @@ export default class Inventory extends React.Component {
 
   handleTypeSelect(event) {
     const articleType = event.target.value;
+    if (articleType === 'all') {
+      fetch('/api/inventory/1')
+        .then(res => res.json())
+        .then(articles => this.setState({
+          articles,
+          articleType
+        }))
+        .catch(err => console.error(err));
+      return;
+    }
     fetch(`/api/inventory/1/${articleType}`)
       .then(res => res.json())
-      .then(articles => this.setState({ articles }))
+      .then(articles => this.setState({
+        articles,
+        articleType
+      }))
       .catch(err => console.error(err));
   }
 
   render() {
     const articles = this.state.articles;
     const numPlaceholders = [];
+    let placeholderImg;
+    if (this.state.articleType === 'all') {
+      placeholderImg = 'hoodie';
+    } else {
+      placeholderImg = this.state.articleType;
+    }
     if (articles.length % 2 === 0) {
       for (let i = 0; i < 8; i++) {
         numPlaceholders.push('placeholder');
@@ -41,7 +61,8 @@ export default class Inventory extends React.Component {
       <div className="row ms-md-3 ms-lg-4 ms-xl-5">
           <div className="col-12 col-md-6 ps-lg-1">
           <select className="form-select mt-4" onChange={this.handleTypeSelect}>
-            <option selected>Article Type</option>
+            <option value='all'>Article Type</option>
+            <option value="all">All</option>
             <option value="tops">Tops</option>
             <option value="bottoms">Bottoms</option>
             <option value="shoes">Shoes</option>
@@ -57,7 +78,9 @@ export default class Inventory extends React.Component {
         }
         {
           numPlaceholders.map((placeholderArticle, index) => (
-            <Article key={ index } articleInfo={{ imgUrl: 'images/hoodiePlaceholder.png' }} />
+            // <Article key={ index } articleInfo={{ imgUrl: 'images/hoodiePlaceholder.png' }} />
+            <Article key={ index } articleInfo={{ imgUrl: `images/${placeholderImg}Placeholder.png` }}/>
+
           ))
         }
       </div>

@@ -1,20 +1,30 @@
 import React from 'react';
+import AppDrawer from './app-drawer';
 
 export default class Navbar extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      page: 'Upload'
+      menuIsOpen: false
     };
+    this.toggleMenu = this.toggleMenu.bind(this);
+  }
+
+  toggleMenu() {
+    this.setState({ menuIsOpen: !this.state.menuIsOpen });
   }
 
   render() {
     return (
-      <nav className="navbar p-3 bg-dark m-0">
-        <li className="nav-item">
-          <h3 className="text-white d-inline p-3">{this.state.page}</h3>
-        </li>
-      </nav>
+      <>
+        <nav className="navbar d-flex justify-content-start align-itmes-c p-3 bg-dark m-0">
+          <a onClick={this.toggleMenu}>
+            <i className="text-white fas fa-bars icon-x-large"></i>
+          </a>
+          <h3 className="text-white  mb-1 ms-3">{this.props.pageHeader}</h3>
+        </nav>
+        <AppDrawer isOpen={this.state.menuIsOpen} toggle={this.toggleMenu}/>
+      </>
     );
   }
 }

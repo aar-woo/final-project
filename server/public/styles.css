@@ -7,6 +7,10 @@ select {
   cursor: pointer;
 }
 
+ul {
+  list-style-type: none;
+}
+
 .primary-square,
 .secondary-square {
   border: 2.5px solid black;
@@ -30,4 +34,36 @@ select {
 
 .camera-img {
   bottom: 7.5rem;
+}
+
+.inventory-article .primary-square,
+.secondary-square {
+  border: 2px solid black;
+  border-radius: 2px;
+  cursor: auto;
+}
+
+.inventory-article .primary-square {
+  width: 1.5rem;
+  height: 1.5rem;
+}
+
+.inventory-article .secondary-square {
+  width: 1.2rem;
+  height: 1.2rem;
+}
+
+.inventory-article img {
+  width: 10rem;
+  height: 10rem;
+}
+
+.icon-x-large {
+  font-size: x-large;
+  cursor: pointer;
+}
+
+li:hover {
+  color: white;
+  background-color: rgb(0 0 0 / 60%);
 }

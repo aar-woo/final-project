@@ -3,11 +3,22 @@ import React from 'react';
 export default class Inventory extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { articles: [] };
+    this.state = {
+      articles: []
+    };
+    this.handleTypeSelect = this.handleTypeSelect.bind(this);
   }
 
   componentDidMount() {
     fetch('/api/inventory/1')
+      .then(res => res.json())
+      .then(articles => this.setState({ articles }))
+      .catch(err => console.error(err));
+  }
+
+  handleTypeSelect(event) {
+    const articleType = event.target.value;
+    fetch(`/api/inventory/1/${articleType}`)
       .then(res => res.json())
       .then(articles => this.setState({ articles }))
       .catch(err => console.error(err));
@@ -27,7 +38,18 @@ export default class Inventory extends React.Component {
     }
     return (
     <div className="container">
-      <div className="row d-flex">
+      <div className="row ms-md-3 ms-lg-4 ms-xl-5">
+          <div className="col-12 col-md-6 ps-lg-1">
+          <select className="form-select mt-4" onChange={this.handleTypeSelect}>
+            <option selected>Article Type</option>
+            <option value="tops">Tops</option>
+            <option value="bottoms">Bottoms</option>
+            <option value="shoes">Shoes</option>
+          </select>
+        </div>
+      </div>
+
+      <div className="row">
         {
           this.state.articles.map(article => (
             <Article articleInfo={article} key={article.articleId}/>

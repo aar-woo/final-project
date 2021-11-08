@@ -19,7 +19,7 @@ export default class Navbar extends React.Component {
       <>
         <nav className="navbar d-flex justify-content-start align-itmes-c p-3 bg-dark m-0">
           <a onClick={this.toggleMenu}>
-            <i className="text-white fas fa-bars icon-x-large" onClick={this.openAppDrawer}></i>
+            <i className="text-white fas fa-bars icon-x-large"></i>
           </a>
           <h3 className="text-white  mb-1 ms-3">{this.props.pageHeader}</h3>
         </nav>

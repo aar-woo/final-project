@@ -55,7 +55,7 @@ app.get('/api/inventory/1', (req, res, next) => {
   `;
   db.query(sql)
     .then(result => {
-      if (!result.rows.length === 0) {
+      if (result.rows.length === 0) {
         throw new ClientError(404, 'No articles of clothing in inventory');
       }
       res.json(result.rows);

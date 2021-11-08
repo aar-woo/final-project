@@ -6,13 +6,20 @@ export default function AppDrawer(props) {
     <div>
       <Offcanvas isOpen={props.isOpen} toggle={props.toggle}>
         <OffcanvasHeader toggle={props.toggle}>
-          <h3><u>Menu</u></h3>
+          <u className="fs-3">Menu</u>
         </OffcanvasHeader>
         <OffcanvasBody className="p-0">
           <ul className="ps-0" >
-            <li className="p-3 m-0"><a href="#" className="menu-item text-decoration-none link-dark"><h5>Upload</h5></a></li>
-            <li className="p-3 m-0"><a href='#inventory' className="menu-item text-decoration-none link-dark"><h5>Inventory</h5></a></li>
-
+            <a href="#" className="text-decoration-none link-dark">
+              <li className="p-3 m-0">
+                <h5>Upload</h5>
+              </li>
+            </a>
+            <a href='#inventory' className="text-decoration-none link-dark">
+              <li className="p-3 m-0">
+                <h5>Inventory</h5>
+              </li>
+            </a>
           </ul>
            </OffcanvasBody>
       </Offcanvas>

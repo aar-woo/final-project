@@ -38,28 +38,3 @@ export default class App extends React.Component {
     );
   }
 }
-
-// export default class App extends React.Component {
-//   constructor(props) {
-//     super(props);
-//     this.state = {
-//       view: 'Inventory'
-//     }
-//   }
-
-//   changeView() {
-//     this.state.view = {}
-//   }
-
-//   render() {
-//     return (
-//       <>
-//         <AppContext.Provider value={contextValue} />
-//         <InventoryPage />
-//         <AppContext />
-//       </>
-//     );
-//     // return <UploadPage />;
-
-//   }
-// }

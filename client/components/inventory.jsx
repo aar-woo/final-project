@@ -40,18 +40,18 @@ export default class Inventory extends React.Component {
 
   renderPage() {
     if (this.state.articles.length === 0) {
-      let placeholderImg;
+      let placeholderType;
       if (this.state.articleType === 'articles') {
-        placeholderImg = 'hoodie';
+        placeholderType = 'hoodie';
       } else {
-        placeholderImg = this.state.articleType;
+        placeholderType = this.state.articleType;
       }
       return (
-        <NoArticles articleType={this.state.articleType} placeholderImg={`images/${placeholderImg}Placeholder.png`}/>
+        <NoArticles articleType={this.state.articleType} placeholderType={`images/${placeholderType}Placeholder.png`}/>
       );
     } else {
       return (
-        <Articles state={this.state} handleTypeSelect={this.handleTypeSelect}/>
+        <Articles inventoryState={this.state} handleTypeSelect={this.handleTypeSelect}/>
       );
     }
   }
@@ -82,50 +82,6 @@ export default class Inventory extends React.Component {
         </div>
       </>
     );
-    // const articles = this.state.articles;
-    // const numPlaceholders = [];
-    // let placeholderImg;
-    // if (this.state.articleType === 'articles') {
-    //   placeholderImg = 'hoodie';
-    // } else {
-    //   placeholderImg = this.state.articleType;
-    // }
-    // if (articles.length % 2 === 0) {
-    //   for (let i = 0; i < 8; i++) {
-    //     numPlaceholders.push('placeholder');
-    //   }
-    // } else {
-    //   for (let i = 0; i < 7; i++) {
-    //     numPlaceholders.push('placeholder');
-    //   }
-    // }
-    // return (
-    // <div className="container">
-    //   <div className="row ms-md-3 ms-lg-4 ms-xl-5">
-    //       <div className="col-12 col-md-6 ps-lg-1">
-    //       <select className="form-select mt-4" onChange={this.handleTypeSelect}>
-    //         <option value='articles'>Article Type</option>
-    //         <option value="articles">articles</option>
-    //         <option value="tops">Tops</option>
-    //         <option value="bottoms">Bottoms</option>
-    //         <option value="shoes">Shoes</option>
-    //       </select>
-    //     </div>
-    //   </div>
-    //   <div className="row">
-    //     {
-    //       this.state.articles.map(article => (
-    //         <Article articleInfo={article} key={article.articleId}/>
-    //       ))
-    //     }
-    //     {
-    //       numPlaceholders.map((placeholderArticle, index) => (
-    //         <Article articleInfo={{ imgUrl: `images/${placeholderImg}Placeholder.png` }} key={index} />
-    //       ))
-    //     }
-    //   </div>
-    // </div>
-    // );
   }
 }
 
@@ -149,13 +105,13 @@ function Article(props) {
 }
 
 function Articles(props) {
-  const { articles, articleType } = props.state;
+  const { articles, articleType } = props.inventoryState;
   const numPlaceholders = [];
-  let placeholderImg;
+  let placeholderType;
   if (articleType === 'articles') {
-    placeholderImg = 'hoodie';
+    placeholderType = 'hoodie';
   } else {
-    placeholderImg = articleType;
+    placeholderType = articleType;
   }
   if (articles.length % 2 === 0) {
     for (let i = 0; i < 8; i++) {
@@ -175,7 +131,7 @@ function Articles(props) {
       }
       {
         numPlaceholders.map((placeholderArticle, index) => (
-          <Article articleInfo={{ imgUrl: `images/${placeholderImg}Placeholder.png` }} key={index} />
+          <Article articleInfo={{ imgUrl: `images/${placeholderType}Placeholder.png` }} key={index} />
         ))
       }
     </>
@@ -184,18 +140,18 @@ function Articles(props) {
 
 function NoArticles(props) {
   const articleType = props.articleType;
-  const imgUrl = props.placeholderImg;
+  const imgUrl = props.placeholderType;
   const emptyArticles = [];
   for (let i = 0; i < 12; i++) {
     emptyArticles.push('placeholder');
   }
   return (
   <>
-      {
-        emptyArticles.map((placeholderArticle, index) => (
-          <Article articleInfo={{ imgUrl, articleType }} key={index} />
-        ))
-      }
+    {
+      emptyArticles.map((placeholderArticle, index) => (
+        <Article articleInfo={{ imgUrl, articleType }} key={index} />
+      ))
+    }
   </>
   );
 }

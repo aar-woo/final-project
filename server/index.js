@@ -56,7 +56,36 @@ app.get('/api/inventory/1', (req, res, next) => {
   db.query(sql)
     .then(result => {
       if (result.rows.length === 0) {
-        throw new ClientError(404, 'No articles of clothing in inventory');
+        res.json([]);
+      }
+      res.json(result.rows);
+    })
+    .catch(err => next(err));
+});
+
+app.get('/api/inventory/1/:articleType', (req, res, next) => {
+  const articleType = req.params.articleType;
+  const articleTypeIds = {
+    tops: 1,
+    bottoms: 2,
+    shoes: 3
+  };
+  const articleTypeId = articleTypeIds[articleType];
+  const sql = `
+    select "articleId",
+           "imgUrl",
+           "primaryColor",
+           "secondaryColor"
+        from "articles"
+        where "userId" = 1
+        AND "articleTypeId" = $1
+  `;
+  const params = [articleTypeId];
+  db.query(sql, params)
+    .then(result => {
+      if (result.rows.length === 0) {
+        res.json([]);
+        return;
       }
       res.json(result.rows);
     })

@@ -3,7 +3,11 @@ import React from 'react';
 export default class Inventory extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { articles: [] };
+    this.state = {
+      articles: [],
+      articleType: 'articles'
+    };
+    this.handleTypeSelect = this.handleTypeSelect.bind(this);
   }
 
   componentDidMount() {
@@ -13,33 +17,62 @@ export default class Inventory extends React.Component {
       .catch(err => console.error(err));
   }
 
-  render() {
-    const articles = this.state.articles;
-    const numPlaceholders = [];
-    if (articles.length % 2 === 0) {
-      for (let i = 0; i < 8; i++) {
-        numPlaceholders.push('placeholder');
+  handleTypeSelect(event) {
+    const articleType = event.target.value;
+    let url;
+    articleType === 'articles' ? url = '' : url = articleType;
+    fetch(`/api/inventory/1/${url}`)
+      .then(res => res.json())
+      .then(articles => this.setState({
+        articles,
+        articleType
+      }))
+      .catch(err => console.error(err));
+  }
+
+  renderPage() {
+    if (this.state.articles.length === 0) {
+      let placeholderType;
+      if (this.state.articleType === 'articles') {
+        placeholderType = 'hoodie';
+      } else {
+        placeholderType = this.state.articleType;
       }
+      return (
+        <NoArticles articleType={this.state.articleType} placeholderType={`images/${placeholderType}Placeholder.png`}/>
+      );
     } else {
-      for (let i = 0; i < 7; i++) {
-        numPlaceholders.push('placeholder');
-      }
+      return (
+        <Articles inventoryState={this.state} handleTypeSelect={this.handleTypeSelect}/>
+      );
+    }
+  }
+
+  render() {
+    let emptyHeader = 'd-none';
+    if (this.state.articles.length === 0) {
+      emptyHeader = 'col-12 col-md-6 d-flex align-items-end justify-content-end mt-3';
     }
     return (
-    <div className="container">
-      <div className="row d-flex">
-        {
-          this.state.articles.map(article => (
-            <Article articleInfo={article} key={article.articleId}/>
-          ))
-        }
-        {
-          numPlaceholders.map((placeholderArticle, index) => (
-            <Article key={ index } articleInfo={{ imgUrl: 'images/hoodiePlaceholder.png' }} />
-          ))
-        }
-      </div>
-    </div>
+      <>
+        <div className="container">
+          <div className="row mx-md-3 mx-lg-4 mx-xl-5">
+            <div className="col-12 col-md-6 ps-lg-1 ps-xxl-4">
+              <select className="form-select mt-4" onChange={this.handleTypeSelect}>
+                <option value='articles'>Article Type</option>
+                <option value="articles">All articles</option>
+                <option value="tops">Tops</option>
+                <option value="bottoms">Bottoms</option>
+                <option value="shoes">Shoes</option>
+              </select>
+            </div>
+            <NoArticlesHeader classes={emptyHeader} articleType={this.state.articleType} />
+          </div>
+          <div className="row">
+            {this.renderPage()}
+          </div>
+        </div>
+      </>
     );
   }
 }
@@ -59,6 +92,66 @@ function Article(props) {
           <a><div className="secondary-square mt-3 d-inline-block shadow-sm" style={{ backgroundColor: `${secondaryColor}` }} ></div></a>
         </div>
       </div>
+    </div>
+  );
+}
+
+function Articles(props) {
+  const { articles, articleType } = props.inventoryState;
+  const numPlaceholders = [];
+  let placeholderType;
+  if (articleType === 'articles') {
+    placeholderType = 'hoodie';
+  } else {
+    placeholderType = articleType;
+  }
+  if (articles.length % 2 === 0) {
+    for (let i = 0; i < 2; i++) {
+      numPlaceholders.push('placeholder');
+    }
+  } else {
+    for (let i = 0; i < 1; i++) {
+      numPlaceholders.push('placeholder');
+    }
+  }
+  return (
+    <>
+      {
+        articles.map(article => (
+          <Article articleInfo={article} key={article.articleId} />
+        ))
+      }
+      {
+        numPlaceholders.map((placeholderArticle, index) => (
+          <Article articleInfo={{ imgUrl: `images/${placeholderType}Placeholder.png` }} key={index} />
+        ))
+      }
+    </>
+  );
+}
+
+function NoArticles(props) {
+  const articleType = props.articleType;
+  const imgUrl = props.placeholderType;
+  const emptyArticles = [];
+  for (let i = 0; i < 12; i++) {
+    emptyArticles.push('placeholder');
+  }
+  return (
+  <>
+    {
+      emptyArticles.map((placeholderArticle, index) => (
+        <Article articleInfo={{ imgUrl, articleType }} key={index} />
+      ))
+    }
+  </>
+  );
+}
+
+function NoArticlesHeader(props) {
+  return (
+    <div className={props.classes}>
+      <h4>No {props.articleType} in your inventory.</h4>
     </div>
   );
 }

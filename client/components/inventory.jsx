@@ -89,7 +89,7 @@ export default class Inventory extends React.Component {
             </div>
             <NoArticlesHeader classes={emptyHeader} articleType={this.state.articleType} />
           </div>
-          <div className="row d-flex justify-content-center">
+          <div className="row">
             {this.renderPage()}
           </div>
         </div>
@@ -105,20 +105,37 @@ function Article(props) {
     deleteBtnClass = 'd-none';
   }
   return (
+    // <div className="col-6 col-md-4 col-lg-3 mt-4 inventory-article">
+    //   <div className="row">
+    //     <div className="col-12 d-flex flex-wrap justify-content-center p-0">
+    //       <img src={imgUrl} className="border border-2 border-dark shadow" />
+    //         <div className="col-12 inventory-squares-col d-flex justify-content-between">
+    //           <div className="col-6">
+    //             <a><div className="primary-square d-inline-block me-2 shadow-sm" style={{ backgroundColor: `${primaryColor}` }}></div></a>
+    //             <a><div className="secondary-square mt-3 d-inline-block shadow-sm" style={{ backgroundColor: `${secondaryColor}` }} ></div></a>
+    //           </div>
+    //           <div className={deleteBtnClass}>
+    //             <button datakey={articleId} className="btn btn-danger btn-sm shadow-sm" onClick={props.onClick}>Delete</button>
+    //           </div>
+    //         </div>
+    //     </div>
+    //   </div>
+    // </div>
     <div className="col-6 col-md-4 col-lg-3 mt-4 inventory-article">
       <div className="row">
-        <div className="col-12 d-flex flex-wrap justify-content-center p-0">
-          <img src={imgUrl} className="border border-2 border-dark shadow" />
-            <div className="col-12 inventory-squares-col d-flex justify-content-between">
-              <div className="col-6">
-                <a><div className="primary-square d-inline-block me-2 shadow-sm" style={{ backgroundColor: `${primaryColor}` }}></div></a>
-                <a><div className="secondary-square mt-3 d-inline-block shadow-sm" style={{ backgroundColor: `${secondaryColor}` }} ></div></a>
-              </div>
-              <div className={deleteBtnClass}>
-                <button datakey={articleId} className="btn btn-danger btn-sm shadow-sm" onClick={props.onClick}>Delete</button>
-              </div>
+        <div className="col-12 d-flex flex-wrap justify-content-center">
+          <div className="col-12 d-flex justify-content-center p-0">
+            <img src={imgUrl} className="border border-2 border-dark shadow" />
+          </div>
+          <div className="col-12 inventory-squares-col d-flex justify-content-between">
+            <div className="col-6">
+              <a><div className="primary-square d-inline-block me-2 shadow-sm" style={{ backgroundColor: `${primaryColor}` }}></div></a>
+              <a><div className="secondary-square mt-3 d-inline-block shadow-sm" style={{ backgroundColor: `${secondaryColor}` }} ></div></a>
             </div>
-
+            <div className={deleteBtnClass}>
+              <button datakey={articleId} className="btn btn-danger btn-sm shadow-sm" onClick={props.onClick}>Delete</button>
+            </div>
+          </div>
         </div>
       </div>
     </div>

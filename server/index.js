@@ -42,6 +42,25 @@ app.post('/api/inventory/1', uploadsMiddleware, (req, res, next) => {
     .catch(err => next(err));
 });
 
+app.delete('/api/inventory/1/:articleId', (req, res, next) => {
+  const articleId = req.params.articleId;
+  const sql = `
+    delete from "articles"
+      where "articleId" = $1
+      returning *;
+  `;
+  const params = [articleId];
+  db.query(sql, params)
+    .then(result => {
+      const [article] = result.rows;
+      if (!article) {
+        throw new ClientError(404, 'Article not found.');
+      }
+      res.status(204).json(article);
+    })
+    .catch(err => next(err));
+});
+
 app.use(staticMiddleware);
 
 app.get('/api/inventory/1', (req, res, next) => {

@@ -19,17 +19,9 @@ export default class Inventory extends React.Component {
 
   handleTypeSelect(event) {
     const articleType = event.target.value;
-    if (articleType === 'articles') {
-      fetch('/api/inventory/1')
-        .then(res => res.json())
-        .then(articles => this.setState({
-          articles,
-          articleType
-        }))
-        .catch(err => console.error(err));
-      return;
-    }
-    fetch(`/api/inventory/1/${articleType}`)
+    let url;
+    articleType === 'articles' ? url = '' : url = articleType;
+    fetch(`/api/inventory/1/${url}`)
       .then(res => res.json())
       .then(articles => this.setState({
         articles,
@@ -114,11 +106,11 @@ function Articles(props) {
     placeholderType = articleType;
   }
   if (articles.length % 2 === 0) {
-    for (let i = 0; i < 8; i++) {
+    for (let i = 0; i < 2; i++) {
       numPlaceholders.push('placeholder');
     }
   } else {
-    for (let i = 0; i < 7; i++) {
+    for (let i = 0; i < 1; i++) {
       numPlaceholders.push('placeholder');
     }
   }

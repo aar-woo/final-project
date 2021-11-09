@@ -47,7 +47,6 @@ app.delete('/api/inventory/1/:articleId', (req, res, next) => {
   const sql = `
     delete from "articles"
       where "articleId" = $1
-      returning *;
   `;
   const params = [articleId];
   db.query(sql, params)

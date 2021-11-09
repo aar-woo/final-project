@@ -80,16 +80,36 @@ export default class Inventory extends React.Component {
 function Article(props) {
   const { imgUrl, primaryColor, secondaryColor } = props.articleInfo;
   return (
-    <div className="col-5 col-md-4 col-lg-3 m-1 mt-4 inventory-article m-auto d-flex flex-column align-items-center">
-      <div className="row">
-        <div className="col-12">
-          <img src={imgUrl} className="border border-2 border-dark shadow" />
-        </div>
-      </div>
-      <div className="row d-flex align-self-start ms-sm-3 ms-md-4 ms-lg-4 ms-xl-5">
-        <div className="col-12 ps-0 ps-sm-1 ps-lg-1 ps-xxl-4">
-          <a><div className="primary-square d-inline-block me-2 shadow-sm" style={{ backgroundColor: `${primaryColor}` }}></div></a>
-          <a><div className="secondary-square mt-3 d-inline-block shadow-sm" style={{ backgroundColor: `${secondaryColor}` }} ></div></a>
+    // <div className="col-5 col-md-4 col-lg-3 m-1 mt-4 inventory-article m-auto d-flex flex-column align-items-center">
+    //   <div className="row">
+    //     <div className="col-12">
+    //       <img src={imgUrl} className="border border-2 border-dark shadow" />
+    //     </div>
+    //   </div>
+    //   <div className="row d-flex align-self-start ms-sm-3 ms-md-4 ms-lg-4 ms-xl-5">
+    //     <div className="col-8 ps-0 ps-sm-1 ps-lg-1 ps-xxl-4">
+    //       <a><div className="primary-square d-inline-block me-2 shadow-sm" style={{ backgroundColor: `${primaryColor}` }}></div></a>
+    //       <a><div className="secondary-square mt-3 d-inline-block shadow-sm" style={{ backgroundColor: `${secondaryColor}` }} ></div></a>
+    //     </div>
+    //     <div className="col-4 d-flex align-items-center ps-1">
+    //       <button className="btn btn-danger btn-sm">Delete</button>
+    //     </div>
+    //   </div>
+    // </div>
+    <div className="col-5 col-md-4 col-lg-3 mt-4 inventory-article mx-auto px-md-4">
+      <div className="row mx-auto ">
+        <div className="col-12 d-flex flex-wrap justify-content-center p-0">
+          <img src={imgUrl} className="border border-2 border-dark shadow d-block" />
+            <div className="col-12 inventory-squares-col d-flex justify-content-between">
+              <div className="col-6">
+                <a><div className="primary-square d-inline-block me-2 shadow-sm" style={{ backgroundColor: `${primaryColor}` }}></div></a>
+                <a><div className="secondary-square mt-3 d-inline-block shadow-sm" style={{ backgroundColor: `${secondaryColor}` }} ></div></a>
+              </div>
+              <div className="col-6 d-flex align-items-center justify-content-end">
+                <button className="btn btn-danger btn-sm">Delete</button>
+              </div>
+            </div>
+
         </div>
       </div>
     </div>

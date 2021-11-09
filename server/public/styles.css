@@ -56,6 +56,13 @@ ul {
 .inventory-article img {
   width: 10rem;
   height: 10rem;
+
+  /* width: 12rem;
+  height: 12rem; */
+}
+
+.inventory-squares-col {
+  max-width: 10rem !important;
 }
 
 .icon-x-large {
@@ -70,4 +77,11 @@ li:hover {
 
 .placeholder-image {
   padding: 1rem;
+}
+
+.btn-xs {
+  padding: 0.25rem 0.4rem;
+  font-size: 0.875rem;
+  line-height: 0.5;
+  border-radius: 0.2rem;
 }

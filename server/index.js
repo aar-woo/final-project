@@ -36,8 +36,8 @@ app.post('/api/inventory/1', uploadsMiddleware, (req, res, next) => {
   const params = [1, imgUrl, articleTypeId, primaryColor, secondaryColor, colorCategoryId, secondaryColorCategoryId];
   db.query(sql, params)
     .then(result => {
-      const [article] = result.rows;
-      res.status(201).json(article);
+      const [articles] = result.rows;
+      res.status(201).json(articles);
     })
     .catch(err => next(err));
 });
@@ -47,6 +47,7 @@ app.delete('/api/inventory/1/:articleId', (req, res, next) => {
   const sql = `
     delete from "articles"
       where "articleId" = $1
+      returning *;
   `;
   const params = [articleId];
   db.query(sql, params)
@@ -75,6 +76,7 @@ app.get('/api/inventory/1', (req, res, next) => {
     .then(result => {
       if (result.rows.length === 0) {
         res.json([]);
+        return;
       }
       res.json(result.rows);
     })

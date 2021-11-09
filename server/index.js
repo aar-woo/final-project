@@ -56,7 +56,7 @@ app.get('/api/inventory/1', (req, res, next) => {
   db.query(sql)
     .then(result => {
       if (result.rows.length === 0) {
-        throw new ClientError(404, 'No articles of clothing in inventory');
+        res.json([]);
       }
       res.json(result.rows);
     })
@@ -84,7 +84,8 @@ app.get('/api/inventory/1/:articleType', (req, res, next) => {
   db.query(sql, params)
     .then(result => {
       if (result.rows.length === 0) {
-        throw new ClientError(404, `No ${articleType} in inventory`);
+        res.json([]);
+        return;
       }
       res.json(result.rows);
     })

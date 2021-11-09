@@ -78,7 +78,11 @@ export default class Inventory extends React.Component {
 }
 
 function Article(props) {
-  const { imgUrl, primaryColor, secondaryColor } = props.articleInfo;
+  const { imgUrl, primaryColor, secondaryColor, isPlaceholder } = props.articleInfo;
+  let deleteBtnClass = 'col-6 d-flex align-items-center justify-content-end';
+  if (isPlaceholder) {
+    deleteBtnClass = 'd-none';
+  }
   return (
     // <div className="col-5 col-md-4 col-lg-3 m-1 mt-4 inventory-article m-auto d-flex flex-column align-items-center">
     //   <div className="row">
@@ -105,7 +109,7 @@ function Article(props) {
                 <a><div className="primary-square d-inline-block me-2 shadow-sm" style={{ backgroundColor: `${primaryColor}` }}></div></a>
                 <a><div className="secondary-square mt-3 d-inline-block shadow-sm" style={{ backgroundColor: `${secondaryColor}` }} ></div></a>
               </div>
-              <div className="col-6 d-flex align-items-center justify-content-end">
+              <div className={deleteBtnClass}>
                 <button className="btn btn-danger btn-sm">Delete</button>
               </div>
             </div>
@@ -143,7 +147,7 @@ function Articles(props) {
       }
       {
         numPlaceholders.map((placeholderArticle, index) => (
-          <Article articleInfo={{ imgUrl: `images/${placeholderType}Placeholder.png` }} key={index} />
+          <Article articleInfo={{ imgUrl: `images/${placeholderType}Placeholder.png`, isPlaceholder: true }} key={index} />
         ))
       }
     </>
@@ -154,14 +158,14 @@ function NoArticles(props) {
   const articleType = props.articleType;
   const imgUrl = props.placeholderType;
   const emptyArticles = [];
-  for (let i = 0; i < 12; i++) {
+  for (let i = 0; i < 8; i++) {
     emptyArticles.push('placeholder');
   }
   return (
   <>
     {
       emptyArticles.map((placeholderArticle, index) => (
-        <Article articleInfo={{ imgUrl, articleType }} key={index} />
+        <Article articleInfo={{ imgUrl, articleType, isPlaceholder: true }} key={index} />
       ))
     }
   </>

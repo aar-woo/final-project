@@ -35,10 +35,11 @@ export default class App extends React.Component {
 
   render() {
     return (
-      <PickerPage />
-      // <>
-      //   {this.renderPage()}
-      // </>
+    <PickerPage />
+    // <UploadPage />
+    // <>
+    //   {this.renderPage()}
+    // </>
     );
   }
 }

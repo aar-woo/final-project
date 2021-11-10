@@ -36,6 +36,7 @@ export default class App extends React.Component {
   render() {
     return (
     <PickerPage />
+    // <InventoryPage />
     // <UploadPage />
     // <>
     //   {this.renderPage()}

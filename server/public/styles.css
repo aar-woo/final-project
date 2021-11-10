@@ -67,6 +67,10 @@ ul {
   cursor: pointer;
 }
 
+.picker .primary-square {
+  cursor: auto;
+}
+
 li:hover {
   color: white;
   background-color: rgb(0 0 0 / 60%);

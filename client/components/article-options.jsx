@@ -29,36 +29,46 @@ export default class ArticleOptions extends React.Component {
     this.state = {
       articleOptions: [
         {
-          altText: 'Slide 1',
-          caption: '',
-          key: 1,
-          src: 'images/image-1636497815679.JPEG'
-        },
-        {
-          altText: 'Slide 2',
-          caption: '',
-          key: 2,
-          src: 'images/image-1636498254972.JPEG'
-        },
-        {
-          altText: 'Slide 3',
-          caption: '',
-          key: 3,
-          src: 'images/image-1636498335645.JPEG'
+          imgUrl: 'images/topsPlaceholder.png',
+          articleId: 'placeholder',
+          isInitialPlaceholder: true
         }
       ],
-      activeIndex: 0
+      activeIndex: 0,
+      colorCategory: '',
+      currentArticle: {
+        imgUrl: 'images/topsPlaceholder.png',
+        articleId: 'placeholder',
+        isInitialPlaceholder: true
+      }
     };
     this.next = this.next.bind(this);
     this.previous = this.previous.bind(this);
     this.goToIndex = this.goToIndex.bind(this);
+    this.handleColorSelect = this.handleColorSelect.bind(this);
+  }
+
+  handleColorSelect(event) {
+    const colorCategory = event.target.value;
+    fetch(`/api/inventory/1/tops/${colorCategory}`)
+      .then(res => res.json())
+      .then(articles => {
+        this.setState({
+          colorCategory,
+          articleOptions: articles,
+          currentArticle: articles[0]
+        });
+      })
+      .catch(err => (console.error(err)));
   }
 
   next() {
     let newIndex;
     this.state.activeIndex === this.state.articleOptions.length - 1 ? newIndex = 0 : newIndex = this.state.activeIndex + 1;
+    const currentArticle = this.state.articleOptions[newIndex];
     this.setState({
-      activeIndex: newIndex
+      activeIndex: newIndex,
+      currentArticle
     });
   }
 
@@ -75,7 +85,20 @@ export default class ArticleOptions extends React.Component {
   }
 
   render() {
-    const numItems = ` ${this.state.articleOptions.length} Items`;
+    const currentArticle = this.state.currentArticle;
+    let numItems;
+    let numItemsClasses;
+
+    if (!currentArticle.isInitialPlaceholder && currentArticle.articleId === 'placeholder') {
+      numItems = 'No matching items';
+      numItemsClasses = 'text-danger';
+    } else if (currentArticle.isInitialPlaceholder) {
+      numItems = '';
+    } else if (this.state.articleOptions.length === 1) {
+      numItems = '1 Item';
+    } else {
+      numItems = ` ${this.state.articleOptions.length} Items`;
+    }
 
     return (
       <div className="container container-max-width mt-5">
@@ -94,9 +117,9 @@ export default class ArticleOptions extends React.Component {
                   onClickHandler={this.goToIndex}
                 />
                 {
-                  this.state.articleOptions.map(item => (
-                    <CarouselItem key={item.src}>
-                      <img src={item.src} alt={item.altText} className="border border-2 border-dark" />
+                  this.state.articleOptions.map(article => (
+                    <CarouselItem key={article.articleId}>
+                      <img src={article.imgUrl} className="border border-2 border-dark" />
                     </CarouselItem>
                   ))
                 }
@@ -114,17 +137,17 @@ export default class ArticleOptions extends React.Component {
               </Carousel>
             </div>
             <div className="col-md-8">
-              <div className="card-body">
+              <div className="card-body ms-2">
                 <h5 className="d-none d-sm-block"><u>Outfit Picker</u></h5>
                 <ColorSelect classes="col-9 col-md-12 mx-auto mx-md-0" selectClasses='form-select' colorCategory={this.state.colorCategory} value={this.state.colorCategory}
-                  colorCategorySelect='Color' />
+                  colorCategorySelect='Color' onChange={this.handleColorSelect} />
                 <div className="col-9 col-md-12 mx-auto d-flex">
-                  <div className="col-6 d-flex align-items-end mt-2">
-                    <a><div className="primary-square" style={{ backgroundColor: `${this.state.primaryColor}` }}></div></a>
-                    <a><div className="secondary-square ms-2" style={{ backgroundColor: `${this.state.secondaryColor}` }}></div></a>
+                  <div className="picker col-6 d-flex align-items-end mt-2">
+                    <div className="primary-square" style={{ backgroundColor: `${this.state.currentArticle.primaryColor}` }}></div>
+                    <div className="secondary-square ms-2" style={{ backgroundColor: `${this.state.currentArticle.secondaryColor}` }}></div>
                   </div>
                   <div className="col-6 d-flex align-items-end justify-content-end">
-                    <span>{numItems}</span>
+                    <span className={numItemsClasses}>{numItems}</span>
                   </div>
                 </div>
               </div>

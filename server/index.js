@@ -143,13 +143,19 @@ app.get('/api/inventory/1/:articleType/:color', (req, res, next) => {
         from "articles"
         where "userId" = 1
         AND "articleTypeId" = $1
-        AND ("colorCategoryId" = $2 OR "secondaryColorCategoryId" = $2)
+        AND ("colorCategoryId" = $2 OR "secondaryColorCategoryId" = $2);
   `;
   const params = [articleTypeId, colorId];
   db.query(sql, params)
     .then(result => {
       if (result.rows.length === 0) {
-        res.json([]);
+        res.json([{
+          imgUrl: 'images/topsPlaceholder.png',
+          articleId: 'placeholder',
+          isInitialPlaceholder: false,
+          primaryColor: 'white',
+          secondaryColor: 'white'
+        }]);
         return;
       }
       res.json(result.rows);

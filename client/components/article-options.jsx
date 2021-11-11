@@ -7,10 +7,11 @@ https://github.com/reactstrap/reactstrap/blob/106e6e4afb4c6cb9e0a00e692cfc487c5e
 export default class ArticleOptions extends React.Component {
   constructor(props) {
     super(props);
+    const articleType = this.props.articleType;
     this.state = {
       articleOptions: [
         {
-          imgUrl: 'images/topsPlaceholder.png',
+          imgUrl: `images/${articleType}Placeholder.png`,
           articleId: 'placeholder',
           isInitialPlaceholder: true
         }
@@ -18,7 +19,7 @@ export default class ArticleOptions extends React.Component {
       activeIndex: 0,
       colorCategory: '',
       currentArticle: {
-        imgUrl: 'images/topsPlaceholder.png',
+        imgUrl: `images/${articleType}Placeholder.png`,
         articleId: 'placeholder',
         isInitialPlaceholder: true
       }
@@ -31,7 +32,9 @@ export default class ArticleOptions extends React.Component {
 
   handleColorSelect(event) {
     const colorCategory = event.target.value;
-    fetch(`/api/inventory/1/tops/${colorCategory}`)
+    const articleType = this.props.articleType;
+
+    fetch(`/api/inventory/1/${articleType}/${colorCategory}`)
       .then(res => res.json())
       .then(articles => {
         this.setState({
@@ -103,7 +106,7 @@ export default class ArticleOptions extends React.Component {
                 {
                   this.state.articleOptions.map(article => (
                     <CarouselItem key={article.articleId}>
-                      <img src={article.imgUrl} className="w-100 border border-dark" />
+                      <img src={article.imgUrl} className="img-fluid border border-dark" />
                     </CarouselItem>
                   ))
                 }

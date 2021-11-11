@@ -71,6 +71,7 @@ export default class ArticleOptions extends React.Component {
   }
 
   render() {
+    const articleType = this.props.articleType.charAt(0).toUpperCase() + this.props.articleType.slice(1);
     const currentArticle = this.state.currentArticle;
     let numItems;
     let numItemsClasses;
@@ -125,7 +126,7 @@ export default class ArticleOptions extends React.Component {
             </div>
             <div className="col-6 col-sm-8 ps-0">
               <div className="card-body">
-                <h5 className="d-none d-md-block"><u>Tops Picker</u></h5>
+                <h5 className="d-none d-md-block"><u>{articleType}</u></h5>
                 <ColorSelect classes="col-12 my-3" selectClasses='form-select' colorCategory={this.state.colorCategory} value={this.state.colorCategory}
                   colorCategorySelect='Color' onChange={this.handleColorSelect} />
                 <div className="col-12 d-sm-flex">

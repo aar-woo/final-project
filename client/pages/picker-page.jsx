@@ -11,17 +11,23 @@ export default class PickerPage extends React.Component {
       bottomArticleId: null,
       shoesArticleId: null
     };
+    this.topArticleId = React.createRef();
+  }
+
+  handleCurrentArticle(currentArticle) {
+    // console.log(currentArticle);
   }
 
   render() {
+
     return (
       <>
         <Navbar pageHeader='Outfit Picker' />
         <AppDrawer />
         <div className="container">
-          <ArticleOptions articleType='tops' />
-          <ArticleOptions articleType='bottoms' />
-          <ArticleOptions articleType='shoes' />
+          <ArticleOptions articleType='tops' mouseLeave={this.handleCurrentArticle}/>
+          <ArticleOptions articleType='bottoms' mouseLeave={this.handleCurrentArticle}/>
+          <ArticleOptions articleType='shoes' mouseLeave={this.handleCurrentArticle}/>
           <div className="row my-3">
             <div className="col-12 d-flex justify-content-center">
               <button className="btn btn-primary">Add to Outfits</button>

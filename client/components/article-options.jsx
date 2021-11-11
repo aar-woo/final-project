@@ -28,6 +28,7 @@ export default class ArticleOptions extends React.Component {
     this.previous = this.previous.bind(this);
     this.goToIndex = this.goToIndex.bind(this);
     this.handleColorSelect = this.handleColorSelect.bind(this);
+    this.handleMouseLeave = this.handleMouseLeave.bind(this);
   }
 
   handleColorSelect(event) {
@@ -70,6 +71,10 @@ export default class ArticleOptions extends React.Component {
     this.setState({ activeIndex: newIndex });
   }
 
+  handleMouseLeave() {
+    this.props.mouseLeave(this.state.currentArticle);
+  }
+
   render() {
     const articleTypeHeader = this.props.articleType.charAt(0).toUpperCase() + this.props.articleType.slice(1);
     const currentArticle = this.state.currentArticle;
@@ -98,6 +103,7 @@ export default class ArticleOptions extends React.Component {
                 next={this.next}
                 previous={this.previous}
                 interval={null}
+                mouseLeave={this.handleMouseLeave}
               >
                 <CarouselIndicators
                   activeIndex={this.state.activeIndex}

@@ -159,7 +159,8 @@ app.get('/api/inventory/1/:articleType/:color', (req, res, next) => {
        select "articleId",
            "imgUrl",
            "primaryColor",
-           "secondaryColor"
+           "secondaryColor",
+           "articleTypeId"
         from "articles"
         where "userId" = 1
         AND "articleTypeId" = $1

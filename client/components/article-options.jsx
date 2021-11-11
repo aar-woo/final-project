@@ -1,27 +1,8 @@
 import React from 'react';
 import { Carousel, CarouselItem, CarouselControl, CarouselIndicators } from 'reactstrap';
 import ColorSelect from './color-select';
-
-// const items = [
-//   {
-//     altText: 'Slide 1',
-//     caption: 'Slide 1',
-//     key: 1,
-//     src: 'https://picsum.photos/id/123/1200/600'
-//   },
-//   {
-//     altText: 'Slide 2',
-//     caption: 'Slide 2',
-//     key: 2,
-//     src: 'https://picsum.photos/id/456/1200/600'
-//   },
-//   {
-//     altText: 'Slide 3',
-//     caption: 'Slide 3',
-//     key: 3,
-//     src: 'https://picsum.photos/id/678/1200/600'
-//   }
-// ];
+delete Carousel.childContextTypes; /* Was getting a warning to define a getChildContext method but carousel still worked, reacstrap library using old context
+ https://github.com/reactstrap/reactstrap/blob/106e6e4afb4c6cb9e0a00e692cfc487c5ed627b1/src/Carousel.js#L288 */
 
 export default class ArticleOptions extends React.Component {
   constructor(props) {
@@ -97,7 +78,7 @@ export default class ArticleOptions extends React.Component {
     } else if (this.state.articleOptions.length === 1) {
       numItems = '1 Item';
     } else {
-      numItems = ` ${this.state.articleOptions.length} Items`;
+      numItems = `${this.state.articleOptions.length} Items`;
     }
 
     return (
@@ -119,7 +100,7 @@ export default class ArticleOptions extends React.Component {
                 {
                   this.state.articleOptions.map(article => (
                     <CarouselItem key={article.articleId}>
-                      <img src={article.imgUrl} className="border border-2 border-dark" />
+                      <img src={article.imgUrl} className="article-option-max-width border border-2 border-dark" />
                     </CarouselItem>
                   ))
                 }
@@ -137,9 +118,9 @@ export default class ArticleOptions extends React.Component {
               </Carousel>
             </div>
             <div className="col-md-8">
-              <div className="card-body ms-2">
+              <div className="card-body">
                 <h5 className="d-none d-sm-block"><u>Outfit Picker</u></h5>
-                <ColorSelect classes="col-9 col-md-12 mx-auto mx-md-0" selectClasses='form-select' colorCategory={this.state.colorCategory} value={this.state.colorCategory}
+                <ColorSelect classes="col-9 col-md-12 mx-auto mx-md-0 my-md-4" selectClasses='form-select' colorCategory={this.state.colorCategory} value={this.state.colorCategory}
                   colorCategorySelect='Color' onChange={this.handleColorSelect} />
                 <div className="col-9 col-md-12 mx-auto d-flex">
                   <div className="picker col-6 d-flex align-items-end mt-2">

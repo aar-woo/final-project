@@ -56,8 +56,10 @@ export default class ArticleOptions extends React.Component {
   previous() {
     let newIndex;
     this.state.activeIndex === 0 ? newIndex = this.state.articleOptions.length - 1 : newIndex = this.state.activeIndex - 1;
+    const currentArticle = this.state.articleOptions[newIndex];
     this.setState({
-      activeIndex: newIndex
+      activeIndex: newIndex,
+      currentArticle
     });
   }
 

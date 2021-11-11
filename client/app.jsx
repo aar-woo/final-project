@@ -2,6 +2,7 @@ import React from 'react';
 import parseRoute from './lib/parse-route';
 import InventoryPage from './pages/inventory-page';
 import UploadPage from './pages/upload-page';
+import PickerPage from './pages/picker-page';
 
 export default class App extends React.Component {
   constructor(props) {
@@ -28,13 +29,16 @@ export default class App extends React.Component {
     if (route.path === 'inventory') {
       return <InventoryPage />;
     }
+    if (route.path === 'picker') {
+      return <PickerPage />;
+    }
   }
 
   render() {
     return (
-      <>
-        {this.renderPage()}
-      </>
+    <>
+      {this.renderPage()}
+    </>
     );
   }
 }

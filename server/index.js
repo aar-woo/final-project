@@ -112,6 +112,57 @@ app.get('/api/inventory/1/:articleType', (req, res, next) => {
     .catch(err => next(err));
 });
 
+app.get('/api/inventory/1/:articleType/:color', (req, res, next) => {
+  const articleType = req.params.articleType;
+  const color = req.params.color;
+  const articleTypeIds = {
+    tops: 1,
+    bottoms: 2,
+    shoes: 3
+  };
+  const colorIds = {
+    black: 1,
+    white: 2,
+    grey: 3,
+    red: 4,
+    yellow: 5,
+    green: 6,
+    cyan: 7,
+    blue: 8,
+    magenta: 9,
+    khaki: 10,
+    none: 0
+  };
+  const articleTypeId = articleTypeIds[articleType];
+  const colorId = colorIds[color];
+  const sql = `
+       select "articleId",
+           "imgUrl",
+           "primaryColor",
+           "secondaryColor"
+        from "articles"
+        where "userId" = 1
+        AND "articleTypeId" = $1
+        AND ("colorCategoryId" = $2 OR "secondaryColorCategoryId" = $2);
+  `;
+  const params = [articleTypeId, colorId];
+  db.query(sql, params)
+    .then(result => {
+      if (result.rows.length === 0) {
+        res.json([{
+          imgUrl: 'images/topsPlaceholder.png',
+          articleId: 'placeholder',
+          isInitialPlaceholder: false,
+          primaryColor: 'white',
+          secondaryColor: 'white'
+        }]);
+        return;
+      }
+      res.json(result.rows);
+    })
+    .catch(err => next(err));
+});
+
 app.use(errorMiddleware);
 
 app.listen(process.env.PORT, () => {

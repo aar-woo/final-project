@@ -150,7 +150,7 @@ app.get('/api/inventory/1/:articleType/:color', (req, res, next) => {
     .then(result => {
       if (result.rows.length === 0) {
         res.json([{
-          imgUrl: 'images/topsPlaceholder.png',
+          imgUrl: `images/${articleType}Placeholder.png`,
           articleId: 'placeholder',
           isInitialPlaceholder: false,
           primaryColor: 'white',

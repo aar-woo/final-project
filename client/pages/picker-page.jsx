@@ -8,7 +8,9 @@ export default function PickerPage(props) {
     <>
       <Navbar pageHeader='Outfit Picker' />
       <AppDrawer />
-      <ArticleOptions />
+      <ArticleOptions articleType='tops'/>
+      <ArticleOptions articleType='bottoms'/>
+      <ArticleOptions articleType='shoes'/>
     </>
   );
 }

@@ -7,10 +7,11 @@ https://github.com/reactstrap/reactstrap/blob/106e6e4afb4c6cb9e0a00e692cfc487c5e
 export default class ArticleOptions extends React.Component {
   constructor(props) {
     super(props);
+    const articleType = this.props.articleType;
     this.state = {
       articleOptions: [
         {
-          imgUrl: 'images/topsPlaceholder.png',
+          imgUrl: `images/${articleType}Placeholder.png`,
           articleId: 'placeholder',
           isInitialPlaceholder: true
         }
@@ -18,7 +19,7 @@ export default class ArticleOptions extends React.Component {
       activeIndex: 0,
       colorCategory: '',
       currentArticle: {
-        imgUrl: 'images/topsPlaceholder.png',
+        imgUrl: `images/${articleType}Placeholder.png`,
         articleId: 'placeholder',
         isInitialPlaceholder: true
       }
@@ -31,7 +32,9 @@ export default class ArticleOptions extends React.Component {
 
   handleColorSelect(event) {
     const colorCategory = event.target.value;
-    fetch(`/api/inventory/1/tops/${colorCategory}`)
+    const articleType = this.props.articleType;
+
+    fetch(`/api/inventory/1/${articleType}/${colorCategory}`)
       .then(res => res.json())
       .then(articles => {
         this.setState({
@@ -68,6 +71,7 @@ export default class ArticleOptions extends React.Component {
   }
 
   render() {
+    const articleTypeHeader = this.props.articleType.charAt(0).toUpperCase() + this.props.articleType.slice(1);
     const currentArticle = this.state.currentArticle;
     let numItems;
     let numItemsClasses;
@@ -84,11 +88,12 @@ export default class ArticleOptions extends React.Component {
     }
 
     return (
-      <div className="container container-max-width mt-5">
+      <div className="container container-max-width mt-3">
         <div className="card border border-dark shadow">
-          <div className="row d-flex justify-content-center justify-content-md-start">
-            <div className="col-12 col-md-4 d-flex justify-content-center justify-content-md-start">
+          <div className="row d-flex justify-content-start">
+            <div className="col-6 col-sm-4 d-flex justify-content-start">
               <Carousel
+              className="mw-100"
                 activeIndex={this.state.activeIndex}
                 next={this.next}
                 previous={this.previous}
@@ -102,7 +107,7 @@ export default class ArticleOptions extends React.Component {
                 {
                   this.state.articleOptions.map(article => (
                     <CarouselItem key={article.articleId}>
-                      <img src={article.imgUrl} className="article-option-max-width border border-dark" />
+                      <img src={article.imgUrl} className="img-fluid border border-dark" />
                     </CarouselItem>
                   ))
                 }
@@ -119,17 +124,17 @@ export default class ArticleOptions extends React.Component {
                 />
               </Carousel>
             </div>
-            <div className="col-md-8">
-              <div className="card-body">
-                <h5 className="d-none d-md-block"><u>Tops Picker</u></h5>
-                <ColorSelect classes="col-9 col-md-12 mx-auto my-md-4" selectClasses='form-select' colorCategory={this.state.colorCategory} value={this.state.colorCategory}
+            <div className="col-6 col-sm-8 ps-0">
+              <div className="card-body ps-0">
+                <h5><u>{articleTypeHeader}</u></h5>
+                <ColorSelect classes="col-12 my-3" selectClasses='form-select' colorCategory={this.state.colorCategory} value={this.state.colorCategory}
                   colorCategorySelect='Color' onChange={this.handleColorSelect} />
-                <div className="col-9 col-md-12 mx-auto d-flex">
-                  <div className="picker col-4 d-flex align-items-end mt-2">
+                <div className="col-12 d-sm-flex">
+                  <div className="picker col-12 col-sm-6 d-flex align-items-end mt-2">
                     <div className="primary-square" style={{ backgroundColor: `${this.state.currentArticle.primaryColor}` }}></div>
                     <div className="secondary-square ms-2" style={{ backgroundColor: `${this.state.currentArticle.secondaryColor}` }}></div>
                   </div>
-                  <div className="col-8 d-flex align-items-end justify-content-end">
+                  <div className="col-12 mt-3 col-sm-6 d-flex align-items-end justify-content-sm-end">
                     <span className={numItemsClasses}>{numItems}</span>
                   </div>
                 </div>

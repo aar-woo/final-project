@@ -125,11 +125,11 @@ export default class ArticleOptions extends React.Component {
                 <ColorSelect classes="col-9 col-md-12 mx-auto my-md-4" selectClasses='form-select' colorCategory={this.state.colorCategory} value={this.state.colorCategory}
                   colorCategorySelect='Color' onChange={this.handleColorSelect} />
                 <div className="col-9 col-md-12 mx-auto d-flex">
-                  <div className="picker col-6 d-flex align-items-end mt-2">
+                  <div className="picker col-4 d-flex align-items-end mt-2">
                     <div className="primary-square" style={{ backgroundColor: `${this.state.currentArticle.primaryColor}` }}></div>
                     <div className="secondary-square ms-2" style={{ backgroundColor: `${this.state.currentArticle.secondaryColor}` }}></div>
                   </div>
-                  <div className="col-6 d-flex align-items-end justify-content-end">
+                  <div className="col-8 d-flex align-items-end justify-content-end">
                     <span className={numItemsClasses}>{numItems}</span>
                   </div>
                 </div>

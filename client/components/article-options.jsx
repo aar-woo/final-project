@@ -2,7 +2,7 @@ import React from 'react';
 import { Carousel, CarouselItem, CarouselControl, CarouselIndicators } from 'reactstrap';
 import ColorSelect from './color-select';
 delete Carousel.childContextTypes; /* Was getting a warning to define a getChildContext method but carousel still worked, reacstrap library using legacy context
- https://github.com/reactstrap/reactstrap/blob/106e6e4afb4c6cb9e0a00e692cfc487c5ed627b1/src/Carousel.js#L288 */
+https://github.com/reactstrap/reactstrap/blob/106e6e4afb4c6cb9e0a00e692cfc487c5ed627b1/src/Carousel.js#L288 */
 
 export default class ArticleOptions extends React.Component {
   constructor(props) {
@@ -83,8 +83,8 @@ export default class ArticleOptions extends React.Component {
 
     return (
       <div className="container container-max-width mt-5">
-        <div className="card border-dark border-2">
-          <div className="row g-0 d-flex justify-content-center justify-content-md-start">
+        <div className="card border border-dark shadow">
+          <div className="row d-flex justify-content-center justify-content-md-start">
             <div className="col-12 col-md-4 d-flex justify-content-center justify-content-md-start">
               <Carousel
                 activeIndex={this.state.activeIndex}
@@ -100,7 +100,7 @@ export default class ArticleOptions extends React.Component {
                 {
                   this.state.articleOptions.map(article => (
                     <CarouselItem key={article.articleId}>
-                      <img src={article.imgUrl} className="article-option-max-width border border-2 border-dark" />
+                      <img src={article.imgUrl} className="article-option-max-width border border-dark" />
                     </CarouselItem>
                   ))
                 }
@@ -119,8 +119,8 @@ export default class ArticleOptions extends React.Component {
             </div>
             <div className="col-md-8">
               <div className="card-body">
-                <h5 className="d-none d-sm-block"><u>Tops Picker</u></h5>
-                <ColorSelect classes="col-9 col-md-12 mx-auto mx-md-0 my-md-4" selectClasses='form-select' colorCategory={this.state.colorCategory} value={this.state.colorCategory}
+                <h5 className="d-none d-md-block"><u>Tops Picker</u></h5>
+                <ColorSelect classes="col-9 col-md-12 mx-auto my-md-4" selectClasses='form-select' colorCategory={this.state.colorCategory} value={this.state.colorCategory}
                   colorCategorySelect='Color' onChange={this.handleColorSelect} />
                 <div className="col-9 col-md-12 mx-auto d-flex">
                   <div className="picker col-6 d-flex align-items-end mt-2">

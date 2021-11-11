@@ -103,7 +103,7 @@ export default class UploadForm extends React.Component {
   }
 
   handleColorSelect(event) {
-    const colorSelected = event.target.value;
+    let colorSelected = event.target.value;
     const colorIds = {
       black: 1,
       white: 2,
@@ -117,7 +117,7 @@ export default class UploadForm extends React.Component {
       khaki: 10,
       none: 0
     };
-    const colorId = colorIds[colorSelected];
+    let colorId = colorIds[colorSelected];
 
     if (this.state.colorCategorySelect === 'Primary') {
       this.setState({
@@ -126,6 +126,10 @@ export default class UploadForm extends React.Component {
         primaryColor: colorSelected
       });
     } else {
+      if (colorSelected === 'none') {
+        colorSelected = this.state.colorCategory;
+        colorId = this.state.colorCategoryId;
+      }
       this.setState({
         secondaryColorCategory: colorSelected,
         secondaryColorCategoryId: colorId,

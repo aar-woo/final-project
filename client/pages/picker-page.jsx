@@ -6,7 +6,7 @@ import ArticleOptions from '../components/article-options';
 export default function PickerPage(props) {
   return (
     <>
-      <Navbar pageHeader='Picker' />
+      <Navbar pageHeader='Outfit Picker' />
       <AppDrawer />
       <ArticleOptions />
     </>

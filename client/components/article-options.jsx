@@ -1,7 +1,7 @@
 import React from 'react';
 import { Carousel, CarouselItem, CarouselControl, CarouselIndicators } from 'reactstrap';
 import ColorSelect from './color-select';
-delete Carousel.childContextTypes; /* Was getting a warning to define a getChildContext method but carousel still worked, reacstrap library using old context
+delete Carousel.childContextTypes; /* Was getting a warning to define a getChildContext method but carousel still worked, reacstrap library using legacy context
  https://github.com/reactstrap/reactstrap/blob/106e6e4afb4c6cb9e0a00e692cfc487c5ed627b1/src/Carousel.js#L288 */
 
 export default class ArticleOptions extends React.Component {
@@ -119,7 +119,7 @@ export default class ArticleOptions extends React.Component {
             </div>
             <div className="col-md-8">
               <div className="card-body">
-                <h5 className="d-none d-sm-block"><u>Outfit Picker</u></h5>
+                <h5 className="d-none d-sm-block"><u>Tops Picker</u></h5>
                 <ColorSelect classes="col-9 col-md-12 mx-auto mx-md-0 my-md-4" selectClasses='form-select' colorCategory={this.state.colorCategory} value={this.state.colorCategory}
                   colorCategorySelect='Color' onChange={this.handleColorSelect} />
                 <div className="col-9 col-md-12 mx-auto d-flex">

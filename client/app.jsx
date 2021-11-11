@@ -1,8 +1,7 @@
 import React from 'react';
 import parseRoute from './lib/parse-route';
-// import InventoryPage from './pages/inventory-page';
-// import UploadPage from './pages/upload-page';
-// import ArticleOptions from './components/article-options';
+import InventoryPage from './pages/inventory-page';
+import UploadPage from './pages/upload-page';
 import PickerPage from './pages/picker-page';
 
 export default class App extends React.Component {
@@ -23,24 +22,26 @@ export default class App extends React.Component {
   }
 
   renderPage() {
-    // const { route } = this.state;
-    // if (route.path === '') {
-    //   return <UploadPage />;
-    // }
-    // if (route.path === 'inventory') {
-    //   return <InventoryPage />;
-    // }
-    // return <PickerPage />;
+    const { route } = this.state;
+    if (route.path === '') {
+      return <UploadPage />;
+    }
+    if (route.path === 'inventory') {
+      return <InventoryPage />;
+    }
+    if (route.path === 'picker') {
+      return <PickerPage />;
+    }
   }
 
   render() {
     return (
-    <PickerPage />
+    // <PickerPage />
     // <InventoryPage />
     // <UploadPage />
-    // <>
-    //   {this.renderPage()}
-    // </>
+    <>
+      {this.renderPage()}
+    </>
     );
   }
 }

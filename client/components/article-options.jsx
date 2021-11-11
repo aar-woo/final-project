@@ -84,7 +84,7 @@ export default class ArticleOptions extends React.Component {
     }
 
     return (
-      <div className="container container-max-width mt-5">
+      <div className="container container-max-width mt-3">
         <div className="card border border-dark shadow">
           <div className="row d-flex justify-content-start">
             <div className="col-6 col-sm-4 d-flex justify-content-start">

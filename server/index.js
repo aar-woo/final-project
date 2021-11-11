@@ -61,6 +61,26 @@ app.delete('/api/inventory/1/:articleId', (req, res, next) => {
     .catch(err => next(err));
 });
 
+app.post('/api/outfits/1', (req, res, next) => {
+  const { topArticleId, bottomArticleId, shoesArticleId } = req.body;
+  const userId = 1;
+  if (!topArticleId || !bottomArticleId || !shoesArticleId) {
+    throw new ClientError(401, 'Invalid outfit, requires top, bottom, and shoes');
+  }
+  const sql = `
+    insert into "outfits" ("topArticleId", "bottomArticleId", "shoesArticleId", "userId")
+      values ($1, $2, $3, $4)
+      returning *
+  `;
+  const params = [topArticleId, bottomArticleId, shoesArticleId, userId];
+  db.query(sql, params)
+    .then(result => {
+      const [outfit] = result.rows;
+      res.status(201).json(outfit);
+    })
+    .catch(err => next(err));
+});
+
 app.use(staticMiddleware);
 
 app.get('/api/inventory/1', (req, res, next) => {

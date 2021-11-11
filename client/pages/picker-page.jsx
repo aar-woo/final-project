@@ -12,10 +12,25 @@ export default class PickerPage extends React.Component {
       shoesArticleId: null
     };
     this.topArticleId = React.createRef();
+    this.handleCurrentArticle = this.handleCurrentArticle.bind(this);
   }
 
   handleCurrentArticle(currentArticle) {
-    // console.log(currentArticle);
+    const articleTypeId = currentArticle.articleTypeId;
+    const articleId = currentArticle.articleId;
+    if (articleTypeId === 1) {
+      this.setState({
+        topArticleId: articleId
+      });
+    } else if (articleTypeId === 2) {
+      this.setState({
+        bottomArticleId: articleId
+      });
+    } else if (articleTypeId === 3) {
+      this.setState({
+        shoesArticleId: articleId
+      });
+    }
   }
 
   render() {

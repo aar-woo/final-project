@@ -77,6 +77,27 @@ export default class ArticleOptions extends React.Component {
     this.props.mouseLeave(this.state.currentArticle);
   }
 
+  clearState() {
+    this.setState({
+      articleOptions: [
+        {
+          imgUrl: `images/${this.props.articleType}Placeholder.png`,
+          articleId: 0,
+          isPlaceholder: true,
+          isInitialPlaceholder: true
+        }
+      ],
+      activeIndex: 0,
+      colorCategory: '',
+      currentArticle: {
+        imgUrl: `images/${this.props.articleType}Placeholder.png`,
+        articleId: 0,
+        isPlaceholder: true,
+        isInitialPlaceholder: true
+      }
+    });
+  }
+
   render() {
     const articleTypeHeader = this.props.articleType.charAt(0).toUpperCase() + this.props.articleType.slice(1);
     const currentArticle = this.state.currentArticle;

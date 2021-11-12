@@ -30,7 +30,7 @@ export default class ArticleOptions extends React.Component {
     this.previous = this.previous.bind(this);
     this.goToIndex = this.goToIndex.bind(this);
     this.handleColorSelect = this.handleColorSelect.bind(this);
-    this.handleMouseLeave = this.handleMouseLeave.bind(this);
+    this.selectArticle = this.selectArticle.bind(this);
   }
 
   handleColorSelect(event) {
@@ -73,8 +73,8 @@ export default class ArticleOptions extends React.Component {
     this.setState({ activeIndex: newIndex });
   }
 
-  handleMouseLeave() {
-    this.props.mouseLeave(this.state.currentArticle);
+  selectArticle() {
+    this.props.getArticle(this.state.currentArticle);
   }
 
   clearState() {
@@ -114,9 +114,9 @@ export default class ArticleOptions extends React.Component {
     } else {
       numItems = `${this.state.articleOptions.length} Items`;
     }
-    //
+
     return (
-      <div className="container container-max-width mt-3" onMouseLeave={this.handleMouseLeave}>
+      <div className="container container-max-width mt-3" onMouseLeave={this.selectArticle}>
         <div className="card border border-dark shadow">
           <div className="row d-flex justify-content-start">
             <div className="col-6 col-sm-4 d-flex justify-content-start">
@@ -135,7 +135,7 @@ export default class ArticleOptions extends React.Component {
                 {
                   this.state.articleOptions.map(article => (
                     <CarouselItem key={article.articleId}>
-                      <img src={article.imgUrl} className="img-fluid border border-dark" />
+                      <img src={article.imgUrl} className="w-100 border border-dark" />
                     </CarouselItem>
                   ))
                 }
@@ -153,7 +153,7 @@ export default class ArticleOptions extends React.Component {
               </Carousel>
             </div>
             <div className="col-6 col-sm-8 ps-0">
-              <div className="card-body ps-0">
+              <div className="card-body ps-0 pb-0">
                 <h5><u>{articleTypeHeader}</u></h5>
                 <ColorSelect classes="col-12 my-3" selectClasses='form-select' colorCategory={this.state.colorCategory} value={this.state.colorCategory}
                   colorCategorySelect='Color' onChange={this.handleColorSelect} />
@@ -162,7 +162,7 @@ export default class ArticleOptions extends React.Component {
                     <div className="primary-square" style={{ backgroundColor: `${this.state.currentArticle.primaryColor}` }}></div>
                     <div className="secondary-square ms-2" style={{ backgroundColor: `${this.state.currentArticle.secondaryColor}` }}></div>
                   </div>
-                  <div className="col-12 mt-3 col-sm-6 d-flex align-items-end justify-content-sm-end">
+                  <div className="col-12 mt-2 col-sm-6 d-flex align-items-end justify-content-sm-end">
                     <span className={numItemsClasses}>{numItems}</span>
                   </div>
                 </div>

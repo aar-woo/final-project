@@ -37,7 +37,7 @@ export default class App extends React.Component {
 
   render() {
     return (
-      <OutfitsPage />
+    <OutfitsPage />
     // <>
     //   {this.renderPage()}
     // </>

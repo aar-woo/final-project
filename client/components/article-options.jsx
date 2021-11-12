@@ -12,7 +12,8 @@ export default class ArticleOptions extends React.Component {
       articleOptions: [
         {
           imgUrl: `images/${articleType}Placeholder.png`,
-          articleId: 'placeholder',
+          articleId: 0,
+          isPlaceholder: true,
           isInitialPlaceholder: true
         }
       ],
@@ -20,7 +21,8 @@ export default class ArticleOptions extends React.Component {
       colorCategory: '',
       currentArticle: {
         imgUrl: `images/${articleType}Placeholder.png`,
-        articleId: 'placeholder',
+        articleId: 0,
+        isPlaceholder: true,
         isInitialPlaceholder: true
       }
     };
@@ -81,7 +83,7 @@ export default class ArticleOptions extends React.Component {
     let numItems;
     let numItemsClasses;
 
-    if (!currentArticle.isInitialPlaceholder && currentArticle.articleId === 'placeholder') {
+    if (!currentArticle.isInitialPlaceholder && currentArticle.isPlaceholder) {
       numItems = 'No matching items';
       numItemsClasses = 'text-danger';
     } else if (currentArticle.isInitialPlaceholder) {
@@ -91,19 +93,18 @@ export default class ArticleOptions extends React.Component {
     } else {
       numItems = `${this.state.articleOptions.length} Items`;
     }
-
+    //
     return (
-      <div className="container container-max-width mt-3">
+      <div className="container container-max-width mt-3" onMouseLeave={this.handleMouseLeave}>
         <div className="card border border-dark shadow">
           <div className="row d-flex justify-content-start">
             <div className="col-6 col-sm-4 d-flex justify-content-start">
               <Carousel
-              className="mw-100"
+                className="mw-100"
                 activeIndex={this.state.activeIndex}
                 next={this.next}
                 previous={this.previous}
                 interval={null}
-                mouseLeave={this.handleMouseLeave}
               >
                 <CarouselIndicators
                   activeIndex={this.state.activeIndex}

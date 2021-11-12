@@ -13,6 +13,7 @@ export default class PickerPage extends React.Component {
     };
     this.topArticleId = React.createRef();
     this.handleCurrentArticle = this.handleCurrentArticle.bind(this);
+    this.addOutfit = this.addOutfit.bind(this);
   }
 
   handleCurrentArticle(currentArticle) {
@@ -33,8 +34,22 @@ export default class PickerPage extends React.Component {
     }
   }
 
-  render() {
+  componentDidUpdate() {
+    const addBtn = document.querySelector('.btn');
+    if (this.state.topArticleId && this.state.bottomArticleId && this.state.shoesArticleId) {
+      addBtn.removeAttribute('disabled');
+    } else {
+      addBtn.setAttribute('disabled', '');
+    }
+  }
 
+  // addOutfit() {
+  //   if (this.state.topArticleId && this.state.bottomArticleId && this.state.shoesArticleId) {
+  //     addBtn.removeAttribute('disabled');
+  //   }
+  // }
+
+  render() {
     return (
       <>
         <Navbar pageHeader='Outfit Picker' />
@@ -45,7 +60,7 @@ export default class PickerPage extends React.Component {
           <ArticleOptions articleType='shoes' mouseLeave={this.handleCurrentArticle}/>
           <div className="row my-3">
             <div className="col-12 d-flex justify-content-center">
-              <button className="btn btn-primary">Add to Outfits</button>
+              <button className="btn btn-primary" onClick={this.addOutfit} disabled>Add to Outfits</button>
             </div>
           </div>
         </div>

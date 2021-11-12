@@ -132,58 +132,6 @@ app.get('/api/inventory/1/:articleType', (req, res, next) => {
     .catch(err => next(err));
 });
 
-// app.get('/api/inventory/1/:articleType/:color', (req, res, next) => {
-//   const articleType = req.params.articleType;
-//   const color = req.params.color;
-//   const articleTypeIds = {
-//     tops: 1,
-//     bottoms: 2,
-//     shoes: 3
-//   };
-//   const colorIds = {
-//     black: 1,
-//     white: 2,
-//     grey: 3,
-//     red: 4,
-//     yellow: 5,
-//     green: 6,
-//     cyan: 7,
-//     blue: 8,
-//     magenta: 9,
-//     khaki: 10,
-//     none: 0
-//   };
-//   const articleTypeId = articleTypeIds[articleType];
-//   const colorId = colorIds[color];
-//   const sql = `
-//        select "articleId",
-//            "imgUrl",
-//            "primaryColor",
-//            "secondaryColor",
-//            "articleTypeId"
-//         from "articles"
-//         where "userId" = 1
-//         AND "articleTypeId" = $1
-//         AND ("colorCategoryId" = $2 OR "secondaryColorCategoryId" = $2);
-//   `;
-//   const params = [articleTypeId, colorId];
-//   db.query(sql, params)
-//     .then(result => {
-//       if (result.rows.length === 0) {
-//         res.json([{
-//           imgUrl: `images/${articleType}Placeholder.png`,
-//           articleId: 'placeholder',
-//           isInitialPlaceholder: false,
-//           primaryColor: 'white',
-//           secondaryColor: 'white'
-//         }]);
-//         return;
-//       }
-//       res.json(result.rows);
-//     })
-//     .catch(err => next(err));
-// });
-
 app.get('/api/inventory/1/:articleType/:color', (req, res, next) => {
   const articleType = req.params.articleType;
   const color = req.params.color;
@@ -234,6 +182,41 @@ app.get('/api/inventory/1/:articleType/:color', (req, res, next) => {
         return;
       }
       res.json(result.rows);
+    })
+    .catch(err => next(err));
+});
+
+app.get('/api/outfits/1', (req, res, next) => {
+  const sql = `
+      select "o"."outfitId",
+        "a"."imgUrl",
+        "a"."articleTypeId",
+        "a"."primaryColor",
+        "a"."secondaryColor"
+    from "articles" as "a"
+    join "outfits" as "o" using ("userId")
+    where "o"."topArticleId" = "a"."articleId"
+    OR "o"."bottomArticleId" = "a"."articleId"
+    OR "o"."shoesArticleId" = "a"."articleId"
+    order by "o"."outfitId"
+  `;
+  db.query(sql)
+    .then(result => {
+      if (result.rows.length === 0) {
+        res.json([]);
+        return;
+      }
+      const articlesData = result.rows;
+      const outfitsArr = [];
+      let currOutfit = [];
+      for (let i = 0; i < articlesData.length; i++) {
+        if (currOutfit.length === 3) {
+          outfitsArr.push(currOutfit);
+          currOutfit = [];
+        }
+        currOutfit.push(articlesData[i]);
+      }
+      res.json(outfitsArr);
     })
     .catch(err => next(err));
 });

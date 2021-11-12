@@ -3,6 +3,7 @@ import parseRoute from './lib/parse-route';
 import InventoryPage from './pages/inventory-page';
 import UploadPage from './pages/upload-page';
 import PickerPage from './pages/picker-page';
+import OutfitsPage from './pages/outfits-page';
 
 export default class App extends React.Component {
   constructor(props) {
@@ -36,9 +37,10 @@ export default class App extends React.Component {
 
   render() {
     return (
-    <>
-      {this.renderPage()}
-    </>
+      <OutfitsPage />
+    // <>
+    //   {this.renderPage()}
+    // </>
     );
   }
 }

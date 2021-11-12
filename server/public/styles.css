@@ -77,9 +77,5 @@ li:hover {
 }
 
 .container-max-width {
-  max-width: 500px !important;
-}
-
-.article-option-max-width {
-  max-width: 10rem;
+  max-width: 620px !important;
 }

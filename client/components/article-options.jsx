@@ -12,7 +12,8 @@ export default class ArticleOptions extends React.Component {
       articleOptions: [
         {
           imgUrl: `images/${articleType}Placeholder.png`,
-          articleId: 'placeholder',
+          articleId: 0,
+          isPlaceholder: true,
           isInitialPlaceholder: true
         }
       ],
@@ -20,7 +21,8 @@ export default class ArticleOptions extends React.Component {
       colorCategory: '',
       currentArticle: {
         imgUrl: `images/${articleType}Placeholder.png`,
-        articleId: 'placeholder',
+        articleId: 0,
+        isPlaceholder: true,
         isInitialPlaceholder: true
       }
     };
@@ -28,6 +30,7 @@ export default class ArticleOptions extends React.Component {
     this.previous = this.previous.bind(this);
     this.goToIndex = this.goToIndex.bind(this);
     this.handleColorSelect = this.handleColorSelect.bind(this);
+    this.selectArticle = this.selectArticle.bind(this);
   }
 
   handleColorSelect(event) {
@@ -70,13 +73,38 @@ export default class ArticleOptions extends React.Component {
     this.setState({ activeIndex: newIndex });
   }
 
+  selectArticle() {
+    this.props.getArticle(this.state.currentArticle);
+  }
+
+  clearState() {
+    this.setState({
+      articleOptions: [
+        {
+          imgUrl: `images/${this.props.articleType}Placeholder.png`,
+          articleId: 0,
+          isPlaceholder: true,
+          isInitialPlaceholder: true
+        }
+      ],
+      activeIndex: 0,
+      colorCategory: '',
+      currentArticle: {
+        imgUrl: `images/${this.props.articleType}Placeholder.png`,
+        articleId: 0,
+        isPlaceholder: true,
+        isInitialPlaceholder: true
+      }
+    });
+  }
+
   render() {
     const articleTypeHeader = this.props.articleType.charAt(0).toUpperCase() + this.props.articleType.slice(1);
     const currentArticle = this.state.currentArticle;
     let numItems;
     let numItemsClasses;
 
-    if (!currentArticle.isInitialPlaceholder && currentArticle.articleId === 'placeholder') {
+    if (!currentArticle.isInitialPlaceholder && currentArticle.isPlaceholder) {
       numItems = 'No matching items';
       numItemsClasses = 'text-danger';
     } else if (currentArticle.isInitialPlaceholder) {
@@ -88,12 +116,12 @@ export default class ArticleOptions extends React.Component {
     }
 
     return (
-      <div className="container container-max-width mt-3">
+      <div className="container container-max-width mt-3" onMouseLeave={this.selectArticle}>
         <div className="card border border-dark shadow">
           <div className="row d-flex justify-content-start">
             <div className="col-6 col-sm-4 d-flex justify-content-start">
               <Carousel
-              className="mw-100"
+                className="mw-100"
                 activeIndex={this.state.activeIndex}
                 next={this.next}
                 previous={this.previous}
@@ -107,7 +135,7 @@ export default class ArticleOptions extends React.Component {
                 {
                   this.state.articleOptions.map(article => (
                     <CarouselItem key={article.articleId}>
-                      <img src={article.imgUrl} className="img-fluid border border-dark" />
+                      <img src={article.imgUrl} className="w-100 border border-dark" />
                     </CarouselItem>
                   ))
                 }
@@ -125,7 +153,7 @@ export default class ArticleOptions extends React.Component {
               </Carousel>
             </div>
             <div className="col-6 col-sm-8 ps-0">
-              <div className="card-body ps-0">
+              <div className="card-body ps-0 pb-0">
                 <h5><u>{articleTypeHeader}</u></h5>
                 <ColorSelect classes="col-12 my-3" selectClasses='form-select' colorCategory={this.state.colorCategory} value={this.state.colorCategory}
                   colorCategorySelect='Color' onChange={this.handleColorSelect} />
@@ -134,7 +162,7 @@ export default class ArticleOptions extends React.Component {
                     <div className="primary-square" style={{ backgroundColor: `${this.state.currentArticle.primaryColor}` }}></div>
                     <div className="secondary-square ms-2" style={{ backgroundColor: `${this.state.currentArticle.secondaryColor}` }}></div>
                   </div>
-                  <div className="col-12 mt-3 col-sm-6 d-flex align-items-end justify-content-sm-end">
+                  <div className="col-12 mt-2 col-sm-6 d-flex align-items-end justify-content-sm-end">
                     <span className={numItemsClasses}>{numItems}</span>
                   </div>
                 </div>

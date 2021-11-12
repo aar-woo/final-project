@@ -61,6 +61,26 @@ app.delete('/api/inventory/1/:articleId', (req, res, next) => {
     .catch(err => next(err));
 });
 
+app.post('/api/outfits/1', (req, res, next) => {
+  const { topArticleId, bottomArticleId, shoesArticleId } = req.body;
+  const userId = 1;
+  if (!topArticleId || !bottomArticleId || !shoesArticleId) {
+    throw new ClientError(401, 'Invalid outfit, requires top, bottom, and shoes');
+  }
+  const sql = `
+    insert into "outfits" ("topArticleId", "bottomArticleId", "shoesArticleId", "userId")
+      values ($1, $2, $3, $4)
+      returning *
+  `;
+  const params = [topArticleId, bottomArticleId, shoesArticleId, userId];
+  db.query(sql, params)
+    .then(result => {
+      const [outfit] = result.rows;
+      res.status(201).json(outfit);
+    })
+    .catch(err => next(err));
+});
+
 app.use(staticMiddleware);
 
 app.get('/api/inventory/1', (req, res, next) => {
@@ -112,6 +132,58 @@ app.get('/api/inventory/1/:articleType', (req, res, next) => {
     .catch(err => next(err));
 });
 
+// app.get('/api/inventory/1/:articleType/:color', (req, res, next) => {
+//   const articleType = req.params.articleType;
+//   const color = req.params.color;
+//   const articleTypeIds = {
+//     tops: 1,
+//     bottoms: 2,
+//     shoes: 3
+//   };
+//   const colorIds = {
+//     black: 1,
+//     white: 2,
+//     grey: 3,
+//     red: 4,
+//     yellow: 5,
+//     green: 6,
+//     cyan: 7,
+//     blue: 8,
+//     magenta: 9,
+//     khaki: 10,
+//     none: 0
+//   };
+//   const articleTypeId = articleTypeIds[articleType];
+//   const colorId = colorIds[color];
+//   const sql = `
+//        select "articleId",
+//            "imgUrl",
+//            "primaryColor",
+//            "secondaryColor",
+//            "articleTypeId"
+//         from "articles"
+//         where "userId" = 1
+//         AND "articleTypeId" = $1
+//         AND ("colorCategoryId" = $2 OR "secondaryColorCategoryId" = $2);
+//   `;
+//   const params = [articleTypeId, colorId];
+//   db.query(sql, params)
+//     .then(result => {
+//       if (result.rows.length === 0) {
+//         res.json([{
+//           imgUrl: `images/${articleType}Placeholder.png`,
+//           articleId: 'placeholder',
+//           isInitialPlaceholder: false,
+//           primaryColor: 'white',
+//           secondaryColor: 'white'
+//         }]);
+//         return;
+//       }
+//       res.json(result.rows);
+//     })
+//     .catch(err => next(err));
+// });
+
 app.get('/api/inventory/1/:articleType/:color', (req, res, next) => {
   const articleType = req.params.articleType;
   const color = req.params.color;
@@ -139,7 +211,8 @@ app.get('/api/inventory/1/:articleType/:color', (req, res, next) => {
        select "articleId",
            "imgUrl",
            "primaryColor",
-           "secondaryColor"
+           "secondaryColor",
+           "articleTypeId"
         from "articles"
         where "userId" = 1
         AND "articleTypeId" = $1
@@ -151,7 +224,9 @@ app.get('/api/inventory/1/:articleType/:color', (req, res, next) => {
       if (result.rows.length === 0) {
         res.json([{
           imgUrl: `images/${articleType}Placeholder.png`,
-          articleId: 'placeholder',
+          articleId: 0,
+          articleTypeId,
+          isPlaceholder: true,
           isInitialPlaceholder: false,
           primaryColor: 'white',
           secondaryColor: 'white'

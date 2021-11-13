@@ -1,8 +1,8 @@
 import React from 'react';
 
-// maybe a function, if don't need state, since passing data through props?
 export default function Outfit(props) {
   const outfitArticles = props.outfitArticles;
+  const outfitNum = props.outfitNum + 1;
   let topArticle;
   let bottomArticle;
   let shoesArticle;
@@ -19,13 +19,17 @@ export default function Outfit(props) {
   }
 
   return (
-    <div className="container col-12 col-sm-6 outfit-container border border-dark border-2 rounded p-2 mt-4 bg-light">
-      <div className="row d-flex justify-content-center">
-        <OutfitArticle article={topArticle}/>
-        <OutfitArticle article={bottomArticle} />
-        <OutfitArticle article={shoesArticle} />
+    <div className="col-12 col-sm-6 col-lg-4 d-flex justify-content-center">
+      <div className="outfit-container border border-dark border-2 rounded-2 p-2 mt-4 bg-light">
+        <h5>Outfit {outfitNum}</h5>
+        <div className="row d-flex justify-content-center">
+          <OutfitArticle article={topArticle} />
+          <OutfitArticle article={bottomArticle} />
+          <OutfitArticle article={shoesArticle} />
+        </div>
       </div>
     </div>
+
   );
 }
 

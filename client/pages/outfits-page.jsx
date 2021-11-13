@@ -8,49 +8,47 @@ export default class OutfitsPage extends React.Component {
     super(props);
 
     this.state = {
-      outfits: [
-        [
-          {
-            articleTypeId: 1,
-            imgUrl: '/images/image-1636593985615.JPEG',
-            outfitId: 2,
-            primaryColor: 'rgb(162, 35, 74)',
-            secondaryColor: 'none'
-          },
-          {
-            articleTypeId: 3,
-            imgUrl: '/images/image-1636658964531.JPEG',
-            outfitId: 2,
-            primaryColor: 'white',
-            secondaryColor: 'grey'
-          },
-          {
-            articleTypeId: 2,
-            imgUrl: '/images/image-1636593966287.JPEG',
-            outfitId: 2,
-            primaryColor: 'rgb(25, 24, 32)',
-            secondaryColor: 'none'
-          }
-        ]
-      ]
+      outfits: []
     };
   }
 
-  render() {
+  componentDidMount() {
+    fetch('/api/outfits/1')
+      .then(res => res.json())
+      .then(outfits => {
+        this.setState({
+          outfits
+        });
+      })
+      .catch(err => console.error(err));
+  }
+
+  renderPage() {
     const outfits = this.state.outfits;
+    if (this.state.outfits.length === 0) {
+      return (
+        <h3 className="text-center mt-5">No outfits saved):</h3>
+      );
+    } else {
+      return (
+
+        outfits.map((outfit, index) => {
+          return (
+            <Outfit key={outfit[0].outfitId} outfitArticles={outfit} outfitNum={index} />
+          );
+        })
+
+      );
+    }
+  }
+
+  render() {
     return (
       <>
         <Navbar pageHeader='Inventory' />
         <AppDrawer />
-        <div className="row d-flex">
-          {
-            outfits.map(outfit => {
-              return (
-                <Outfit key={outfit[0].outfitId} outfitArticles={outfit} />
-              );
-            })
-          }
-          {/* <Outfit outfitArticles={this.state.outfits[0]} /> */}
+        <div className="row d-flex justify-content-center">
+         { this.renderPage()}
         </div>
       </>
     );

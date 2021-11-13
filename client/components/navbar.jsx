@@ -17,7 +17,7 @@ export default class Navbar extends React.Component {
   render() {
     return (
       <>
-        <nav className="navbar d-flex justify-content-start align-itmes-c p-3 bg-dark m-0">
+        <nav className="navbar d-flex justify-content-start align-items-center p-3 bg-dark">
           <a onClick={this.toggleMenu}>
             <i className="text-white fas fa-bars icon-x-large"></i>
           </a>

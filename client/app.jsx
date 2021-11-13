@@ -26,6 +26,9 @@ export default class App extends React.Component {
   renderPage() {
     const { route } = this.state;
     if (route.path === '') {
+      return <AuthPage />;
+    }
+    if (route.path === 'upload') {
       return <UploadPage />;
     }
     if (route.path === 'inventory') {
@@ -41,10 +44,9 @@ export default class App extends React.Component {
 
   render() {
     return (
-      <AuthPage />
-    // <>
-    //   {this.renderPage()}
-    // </>
+    <>
+      {this.renderPage()}
+    </>
     );
   }
 }

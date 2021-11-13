@@ -10,7 +10,7 @@ export default function AppDrawer(props) {
         </OffcanvasHeader>
         <OffcanvasBody className="p-0">
           <ul className="ps-0" >
-            <a href="#" className="text-decoration-none link-dark">
+            <a href="#upload" className="text-decoration-none link-dark">
               <li className="p-3 m-0">
                 <h5>Upload</h5>
               </li>

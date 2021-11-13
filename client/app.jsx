@@ -4,6 +4,7 @@ import InventoryPage from './pages/inventory-page';
 import UploadPage from './pages/upload-page';
 import PickerPage from './pages/picker-page';
 import OutfitsPage from './pages/outfits-page';
+import AuthPage from './pages/auth-page';
 
 export default class App extends React.Component {
   constructor(props) {
@@ -40,9 +41,10 @@ export default class App extends React.Component {
 
   render() {
     return (
-    <>
-      {this.renderPage()}
-    </>
+      <AuthPage />
+    // <>
+    //   {this.renderPage()}
+    // </>
     );
   }
 }

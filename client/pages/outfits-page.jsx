@@ -44,7 +44,6 @@ export default class OutfitsPage extends React.Component {
             <Outfit key={outfit[0].outfitId} outfitArticles={outfit}outfitNum={index} />
           );
         })
-
       );
     }
   }
@@ -60,5 +59,4 @@ export default class OutfitsPage extends React.Component {
       </>
     );
   }
-
 }

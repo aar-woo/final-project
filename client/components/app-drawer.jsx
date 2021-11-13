@@ -25,6 +25,11 @@ export default function AppDrawer(props) {
                 <h5>Outfit Picker</h5>
               </li>
             </a>
+            <a href='#outfits' className="text-decoration-none link-dark">
+              <li className="p-3 m-0">
+                <h5>Outfits</h5>
+              </li>
+            </a>
           </ul>
            </OffcanvasBody>
       </Offcanvas>

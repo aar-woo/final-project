@@ -127,29 +127,12 @@ function Article(props) {
 }
 
 function Articles(props) {
-  const { articles, articleType } = props.inventoryState;
-  const placeholdersArr = [];
-  let numPlaceholders;
-  let placeholderType;
-  if (articleType === 'articles') {
-    placeholderType = 'hoodie';
-  } else {
-    placeholderType = articleType;
-  }
-  articles.length % 2 === 0 ? numPlaceholders = 2 : numPlaceholders = 1;
-  for (let i = 0; i < numPlaceholders; i++) {
-    placeholdersArr.push('placeholder');
-  }
+  const { articles } = props.inventoryState;
   return (
     <>
       {
         articles.map(article => (
           <Article articleInfo={article} key={article.articleId} onClick={props.handleDelete}/>
-        ))
-      }
-      {
-        placeholdersArr.map((placeholderArticle, index) => (
-          <Article articleInfo={{ imgUrl: `images/${placeholderType}Placeholder.png`, isPlaceholder: true }} key={index} />
         ))
       }
     </>

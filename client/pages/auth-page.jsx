@@ -20,9 +20,7 @@ export default class AuthPage extends React.Component {
                 Sign Up
               </h2>
             </header>
-
               <AuthForm />
-
           </div>
         </div>
       </>

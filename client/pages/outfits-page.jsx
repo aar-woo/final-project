@@ -30,9 +30,7 @@ export default class OutfitsPage extends React.Component {
     const outfits = this.state.outfits;
     if (this.state.isLoading) {
       return (
-        <div className="col-12 mt-5 d-flex justify-content-center">
-          <Spinner></Spinner>
-        </div>
+        <Spinner className="mt-5 mx-auto"></Spinner>
       );
     }
     if (this.state.outfits.length === 0) {
@@ -41,10 +39,9 @@ export default class OutfitsPage extends React.Component {
       );
     } else {
       return (
-
         outfits.map((outfit, index) => {
           return (
-            <Outfit key={outfit[0].outfitId} outfitArticles={outfit} outfitNum={index} />
+            <Outfit key={outfit[0].outfitId} outfitArticles={outfit}outfitNum={index} />
           );
         })
 
@@ -55,7 +52,7 @@ export default class OutfitsPage extends React.Component {
   render() {
     return (
       <>
-        <Navbar pageHeader='Inventory' />
+        <Navbar pageHeader='Outfits' />
         <AppDrawer />
         <div className="row d-flex justify-content-center">
          { this.renderPage()}

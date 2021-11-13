@@ -17,11 +17,16 @@ export default class Navbar extends React.Component {
   render() {
     return (
       <>
-        <nav className="navbar d-flex justify-content-start align-items-center p-3 bg-dark">
-          <a onClick={this.toggleMenu}>
-            <i className="text-white fas fa-bars icon-x-large"></i>
-          </a>
-          <h3 className="text-white mb-1 ms-3">{this.props.pageHeader}</h3>
+        <nav className="navbar bg-dark p-0">
+          <div className="col-6 d-flex justify-content-start align-items-center p-3">
+            <a onClick={this.toggleMenu}>
+              <i className="text-white fas fa-bars icon-x-large"></i>
+            </a>
+            <h3 className="text-white mb-1 mx-2">{this.props.pageHeader}</h3>
+          </div>
+          <div className="col-6 d-flex justify-content-end">
+            <h3 className="text-white mb-1 me-4">Pick-A-Fit</h3>
+          </div>
         </nav>
         <AppDrawer isOpen={this.state.menuIsOpen} toggle={this.toggleMenu}/>
       </>

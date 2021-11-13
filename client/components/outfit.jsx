@@ -19,7 +19,7 @@ export default function Outfit(props) {
   }
 
   return (
-    <div className="col-12 col-sm-6 col-lg-4 d-flex justify-content-center">
+    <div className="col-12 col-sm-6 col-lg-4 d-flex justify-content-center my-3">
       <div className="outfit-container border border-dark border-2 rounded-2 p-2 mt-4 bg-light">
         <h5>Outfit {outfitNum}</h5>
         <div className="row d-flex justify-content-center">
@@ -29,14 +29,13 @@ export default function Outfit(props) {
         </div>
       </div>
     </div>
-
   );
 }
 
 function OutfitArticle(props) {
   const article = props.article;
   return (
-    <div className="col-12 col-sm-12 d-flex justify-content-center outfit-article my-2">
+    <div className="col-12 d-flex justify-content-center outfit-article my-2">
       <img src={article.imgUrl} className="border border-2 border-dark shadow" />
       <div className="d-flex align-items-end">
         <a><div className="primary-square mx-2 shadow-sm" style={{ backgroundColor: `${article.primaryColor}` }}></div></a>

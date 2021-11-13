@@ -33,14 +33,16 @@ export default class App extends React.Component {
     if (route.path === 'picker') {
       return <PickerPage />;
     }
+    if (route.path === 'outfits') {
+      return <OutfitsPage />;
+    }
   }
 
   render() {
     return (
-    <OutfitsPage />
-    // <>
-    //   {this.renderPage()}
-    // </>
+    <>
+      {this.renderPage()}
+    </>
     );
   }
 }

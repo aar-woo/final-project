@@ -6,6 +6,7 @@ const pg = require('pg');
 const ClientError = require('./client-error');
 const uploadsMiddleware = require('./uploads-middleware');
 const argon2 = require('argon2');
+const jwt = require('jsonwebtoken');
 
 const db = new pg.Pool({
   connectionString: process.env.DATABASE_URL,
@@ -37,6 +38,41 @@ app.post('/api/auth/sign-up', (req, res, next) => {
     .then(result => {
       const [user] = result.rows;
       res.status(201).json(user);
+    })
+    .catch(err => next(err));
+});
+
+app.post('/api/auth/sign-in', (req, res, next) => {
+  const { username, password: userPassword } = req.body;
+  if (!username || !userPassword) {
+    throw new ClientError(401, 'invalid login');
+  }
+  const sql = `
+    select "userId",
+           "password"
+      from "users"
+     where "username" = $1
+  `;
+  const params = [username];
+  db.query(sql, params)
+    .then(result => {
+      const [user] = result.rows;
+      if (!user) {
+        res.json({ user: null }); // handle in client side to display no user under username
+        return;
+      }
+      const { userId, password } = user;
+      return argon2
+        .verify(password, userPassword)
+        .then(isMatching => {
+          if (!isMatching) {
+            res.json({ password: null }); // handle client side to display wrong password
+            return;
+          }
+          const payload = { userId, username };
+          const token = jwt.sign(payload, process.env.TOKEN_SECRET);
+          res.json({ token, user: payload });
+        });
     })
     .catch(err => next(err));
 });

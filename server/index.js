@@ -281,13 +281,14 @@ app.get('/api/outfits/:userId', (req, res, next) => {
       const outfitsArr = [];
       let currOutfit = [];
       for (let i = 0; i < articlesData.length; i++) {
+        currOutfit.push(articlesData[i]);
         if (currOutfit.length === 3) {
           outfitsArr.push(currOutfit);
           currOutfit = [];
         }
-        currOutfit.push(articlesData[i]);
       }
       res.json(outfitsArr);
+
     })
     .catch(err => next(err));
 });

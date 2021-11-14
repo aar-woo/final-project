@@ -19,6 +19,7 @@ export default class OutfitsPage extends React.Component {
   componentDidMount() {
     const userId = this.context.user.userId;
     const token = this.context.token;
+
     fetch(`/api/outfits/${userId}`, {
       headers: {
         'x-access-token': token

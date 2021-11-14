@@ -1,5 +1,6 @@
 import React from 'react';
 import { Carousel, CarouselItem, CarouselControl, CarouselIndicators } from 'reactstrap';
+import AppContext from '../lib/app-context';
 import ColorSelect from './color-select';
 delete Carousel.childContextTypes; /* Was getting a warning to define a getChildContext method but carousel still worked, reacstrap library using legacy context
 https://github.com/reactstrap/reactstrap/blob/106e6e4afb4c6cb9e0a00e692cfc487c5ed627b1/src/Carousel.js#L288 */
@@ -36,8 +37,13 @@ export default class ArticleOptions extends React.Component {
   handleColorSelect(event) {
     const colorCategory = event.target.value;
     const articleType = this.props.articleType;
-
-    fetch(`/api/inventory/1/${articleType}/${colorCategory}`)
+    const userId = this.context.user.userId;
+    const token = this.context.token;
+    fetch(`/api/inventory/${userId}/${articleType}/${colorCategory}`, {
+      headers: {
+        'x-access-token': token
+      }
+    })
       .then(res => res.json())
       .then(articles => {
         this.setState({
@@ -174,3 +180,5 @@ export default class ArticleOptions extends React.Component {
     );
   }
 }
+
+ArticleOptions.contextType = AppContext;

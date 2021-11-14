@@ -4,6 +4,7 @@ import categorizeColor from '../lib/categorizeColor';
 import colorConvert from 'color-convert';
 import Resizer from 'react-image-file-resizer';
 import ColorSelect from './color-select';
+import AppContext from '../lib/app-context';
 
 const colorThief = new ColorThiefClass();
 
@@ -153,6 +154,9 @@ export default class UploadForm extends React.Component {
   handleSubmit(event) {
     event.preventDefault();
     const formData = new FormData();
+    const userId = this.context.user.userId;
+    const token = this.context.token;
+
     formData.append('colorCategoryId', this.state.colorCategoryId);
     formData.append('secondaryColorCategoryId', this.state.secondaryColorCategoryId);
     formData.append('primaryColor', this.state.primaryColor);
@@ -160,8 +164,11 @@ export default class UploadForm extends React.Component {
     formData.append('articleTypeId', this.state.articleTypeId);
     formData.append('image', this.state.imgFile);
 
-    fetch('/api/inventory/1', {
+    fetch(`/api/inventory/${userId}`, {
       method: 'POST',
+      headers: {
+        'x-access-token': token
+      },
       body: formData
     })
       .then(result => result.json())
@@ -257,3 +264,5 @@ export default class UploadForm extends React.Component {
     );
   }
 }
+
+UploadForm.contextType = AppContext;

@@ -7,6 +7,7 @@ const ClientError = require('./client-error');
 const uploadsMiddleware = require('./uploads-middleware');
 const argon2 = require('argon2');
 const jwt = require('jsonwebtoken');
+const authorizationMiddleware = require('./authorization-middleware');
 
 const db = new pg.Pool({
   connectionString: process.env.DATABASE_URL,
@@ -58,16 +59,14 @@ app.post('/api/auth/sign-in', (req, res, next) => {
     .then(result => {
       const [user] = result.rows;
       if (!user) {
-        res.json({ user: null }); // handle in client side to display no user under username
-        return;
+        throw new ClientError(401, 'invalid login');
       }
       const { userId, password } = user;
       return argon2
         .verify(password, userPassword)
         .then(isMatching => {
           if (!isMatching) {
-            res.json({ password: null }); // handle client side to display wrong password
-            return;
+            throw new ClientError(401, 'invalid login');
           }
           const payload = { userId, username };
           const token = jwt.sign(payload, process.env.TOKEN_SECRET);
@@ -77,10 +76,13 @@ app.post('/api/auth/sign-in', (req, res, next) => {
     .catch(err => next(err));
 });
 
-app.post('/api/inventory/1', uploadsMiddleware, (req, res, next) => {
+app.use(authorizationMiddleware);
+
+app.post('/api/inventory/:userId', uploadsMiddleware, (req, res, next) => {
   const {
     articleTypeId, primaryColor, secondaryColor, colorCategoryId, secondaryColorCategoryId
   } = req.body;
+  const userId = req.params.userId;
   if (!articleTypeId || !primaryColor || !colorCategoryId) {
     throw new ClientError(401, 'Invalid article, articleTypeId, primaryColor, and colorCategoryId are required.');
   }
@@ -93,7 +95,7 @@ app.post('/api/inventory/1', uploadsMiddleware, (req, res, next) => {
                 values ($1, $2, $3, $4, $5, $6, $7)
                 returning *
   `;
-  const params = [1, imgUrl, articleTypeId, primaryColor, secondaryColor, colorCategoryId, secondaryColorCategoryId];
+  const params = [userId, imgUrl, articleTypeId, primaryColor, secondaryColor, colorCategoryId, secondaryColorCategoryId];
   db.query(sql, params)
     .then(result => {
       const [articles] = result.rows;
@@ -102,14 +104,16 @@ app.post('/api/inventory/1', uploadsMiddleware, (req, res, next) => {
     .catch(err => next(err));
 });
 
-app.delete('/api/inventory/1/:articleId', (req, res, next) => {
+app.delete('/api/inventory/:userId/:articleId', (req, res, next) => {
   const articleId = req.params.articleId;
+  const userId = req.params.userId;
   const sql = `
     delete from "articles"
       where "articleId" = $1
+      AND userId = $2
       returning *;
   `;
-  const params = [articleId];
+  const params = [articleId, userId];
   db.query(sql, params)
     .then(result => {
       const [article] = result.rows;
@@ -121,9 +125,9 @@ app.delete('/api/inventory/1/:articleId', (req, res, next) => {
     .catch(err => next(err));
 });
 
-app.post('/api/outfits/1', (req, res, next) => {
+app.post('/api/outfits/:userId', (req, res, next) => {
   const { topArticleId, bottomArticleId, shoesArticleId } = req.body;
-  const userId = 1;
+  const userId = req.params.userId;
   if (!topArticleId || !bottomArticleId || !shoesArticleId) {
     throw new ClientError(401, 'Invalid outfit, requires top, bottom, and shoes');
   }
@@ -143,16 +147,18 @@ app.post('/api/outfits/1', (req, res, next) => {
 
 app.use(staticMiddleware);
 
-app.get('/api/inventory/1', (req, res, next) => {
+app.get('/api/inventory/:userId', (req, res, next) => {
+  const userId = req.params.userId;
   const sql = `
     select "articleId",
           "imgUrl",
           "primaryColor",
           "secondaryColor"
       from "articles"
-      where "userId" = 1
+      where "userId" = $1
   `;
-  db.query(sql)
+  const params = [userId];
+  db.query(sql, params)
     .then(result => {
       if (result.rows.length === 0) {
         res.json([]);
@@ -163,8 +169,9 @@ app.get('/api/inventory/1', (req, res, next) => {
     .catch(err => next(err));
 });
 
-app.get('/api/inventory/1/:articleType', (req, res, next) => {
+app.get('/api/inventory/:userId/:articleType', (req, res, next) => {
   const articleType = req.params.articleType;
+  const userId = req.params.userId;
   const articleTypeIds = {
     tops: 1,
     bottoms: 2,
@@ -177,10 +184,10 @@ app.get('/api/inventory/1/:articleType', (req, res, next) => {
             "primaryColor",
             "secondaryColor"
         from "articles"
-        where "userId" = 1
-        AND "articleTypeId" = $1
+        where "userId" = $1
+        AND "articleTypeId" = $2
   `;
-  const params = [articleTypeId];
+  const params = [userId, articleTypeId];
   db.query(sql, params)
     .then(result => {
       if (result.rows.length === 0) {
@@ -192,8 +199,9 @@ app.get('/api/inventory/1/:articleType', (req, res, next) => {
     .catch(err => next(err));
 });
 
-app.get('/api/inventory/1/:articleType/:color', (req, res, next) => {
+app.get('/api/inventory/:userId/:articleType/:color', (req, res, next) => {
   const articleType = req.params.articleType;
+  const userId = req.params.userId;
   const color = req.params.color;
   const articleTypeIds = {
     tops: 1,
@@ -222,11 +230,11 @@ app.get('/api/inventory/1/:articleType/:color', (req, res, next) => {
         "secondaryColor",
         "articleTypeId"
     from "articles"
-    where "userId" = 1
-    AND "articleTypeId" = $1
-    AND ("colorCategoryId" = $2 OR "secondaryColorCategoryId" = $2);
+    where "userId" = $1
+    AND "articleTypeId" = $2
+    AND ("colorCategoryId" = $3 OR "secondaryColorCategoryId" = $3);
   `;
-  const params = [articleTypeId, colorId];
+  const params = [userId, articleTypeId, colorId];
   db.query(sql, params)
     .then(result => {
       if (result.rows.length === 0) {
@@ -246,7 +254,8 @@ app.get('/api/inventory/1/:articleType/:color', (req, res, next) => {
     .catch(err => next(err));
 });
 
-app.get('/api/outfits/1', (req, res, next) => {
+app.get('/api/outfits/:userId', (req, res, next) => {
+  const userId = req.params.userId;
   const sql = `
       select "o"."outfitId",
         "a"."imgUrl",
@@ -255,12 +264,14 @@ app.get('/api/outfits/1', (req, res, next) => {
         "a"."secondaryColor"
     from "articles" as "a"
     join "outfits" as "o" using ("userId")
-    where "o"."topArticleId" = "a"."articleId"
+    where "o"."userId" = $1
+    AND ("o"."topArticleId" = "a"."articleId"
     OR "o"."bottomArticleId" = "a"."articleId"
-    OR "o"."shoesArticleId" = "a"."articleId"
+    OR "o"."shoesArticleId" = "a"."articleId")
     order by "o"."outfitId"
   `;
-  db.query(sql)
+  const params = [userId];
+  db.query(sql, params)
     .then(result => {
       if (result.rows.length === 0) {
         res.json([]);

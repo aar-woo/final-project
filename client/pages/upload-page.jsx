@@ -1,10 +1,15 @@
 import React from 'react';
 import UploadForm from '../components/upload-form';
 import Navbar from '../components/navbar';
+import Redirect from '../components/redirect';
+import AppContext from '../lib/app-context';
 
-export default function UploadPage(props) {
+export default class UploadPage extends React.Component {
+  render() {
 
-  return (
+    if (!this.context.user) return <Redirect to="sign-in" />;
+
+    return (
       <>
         <Navbar pageHeader='Upload' />
         <div className="container mt-4">
@@ -20,6 +25,9 @@ export default function UploadPage(props) {
           </div>
         </div>
       </>
-  );
+    );
+  }
 
 }
+
+UploadPage.contextType = AppContext;

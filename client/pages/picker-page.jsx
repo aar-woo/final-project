@@ -2,6 +2,8 @@ import React from 'react';
 import Navbar from '../components/navbar';
 import AppDrawer from '../components/app-drawer';
 import ArticleOptions from '../components/article-options';
+import AppContext from '../lib/app-context';
+import Redirect from '../components/redirect';
 
 export default class PickerPage extends React.Component {
   constructor(props) {
@@ -35,9 +37,14 @@ export default class PickerPage extends React.Component {
   }
 
   addOutfit() {
-    fetch('/api/outfits/1', {
+    const userId = this.context.user.userId;
+    const token = this.context.token;
+    fetch(`/api/outfits/${userId}`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: {
+        'Content-Type': 'application/json',
+        'x-access-token': token
+      },
       body: JSON.stringify(this.state)
     })
       .then(res => res.json())
@@ -54,6 +61,8 @@ export default class PickerPage extends React.Component {
   }
 
   render() {
+    if (!this.context.user) return <Redirect to="sign-in" />;
+
     let addBtnClass;
     if (this.state.topArticleId && this.state.bottomArticleId && this.state.shoesArticleId) {
       addBtnClass = 'btn btn-primary mt-3 shadow';
@@ -86,3 +95,5 @@ function OutfitOption(props) {
     </>
   );
 }
+
+PickerPage.contextType = AppContext;

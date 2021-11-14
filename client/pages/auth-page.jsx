@@ -2,10 +2,20 @@ import React from 'react';
 import Navbar from '../components/navbar';
 import AppDrawer from '../components/app-drawer';
 import AuthForm from '../components/auth-form';
+import AppContext from '../lib/app-context';
+import Redirect from '../components/redirect';
 
 export default class AuthPage extends React.Component {
 
   render() {
+
+    const { user, route, handleSignIn } = this.context;
+    const welcomeMessage = route.path === 'sign-in'
+      ? 'Login'
+      : 'Sign Up';
+
+    if (user) return <Redirect to="" />;
+
     return (
       <>
         <Navbar pageHeader='' />
@@ -17,13 +27,15 @@ export default class AuthPage extends React.Component {
           <div className="col-10 col-md-8  col-xl-4 border border-2 shadow">
             <header className="text-center">
               <h2 className="my-3">
-                Sign Up
+                {welcomeMessage}
               </h2>
             </header>
-              <AuthForm />
+              <AuthForm action={route.path} onSignIn={handleSignIn} />
           </div>
         </div>
       </>
     );
   }
 }
+
+AuthPage.contextType = AppContext;

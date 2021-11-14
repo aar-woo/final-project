@@ -5,6 +5,7 @@ const staticMiddleware = require('./static-middleware');
 const pg = require('pg');
 const ClientError = require('./client-error');
 const uploadsMiddleware = require('./uploads-middleware');
+const argon2 = require('argon2');
 
 const db = new pg.Pool({
   connectionString: process.env.DATABASE_URL,
@@ -17,6 +18,29 @@ const app = express();
 
 app.use(express.json());
 
+app.post('/api/auth/sign-up', (req, res, next) => {
+  const { username, password } = req.body;
+  if (!username || !password) {
+    throw new ClientError(400, 'username and password are required');
+  }
+  argon2
+    .hash(password)
+    .then(hashedPassword => {
+      const sql = `
+      insert into "users" ("username", "password")
+        values ($1, $2)
+        returning "userId", "username"
+      `;
+      const params = [username, hashedPassword];
+      return db.query(sql, params);
+    })
+    .then(result => {
+      const [user] = result.rows;
+      res.status(201).json(user);
+    })
+    .catch(err => next(err));
+});
+
 app.post('/api/inventory/1', uploadsMiddleware, (req, res, next) => {
   const {
     articleTypeId, primaryColor, secondaryColor, colorCategoryId, secondaryColorCategoryId
@@ -28,10 +52,10 @@ app.post('/api/inventory/1', uploadsMiddleware, (req, res, next) => {
   const imgUrl = `/images/${req.file.filename}`;
 
   const sql = `
-  insert into "articles" ("userId", "imgUrl", "articleTypeId", "primaryColor",
-                          "secondaryColor", "colorCategoryId", "secondaryColorCategoryId")
-              values ($1, $2, $3, $4, $5, $6, $7)
-              returning *
+    insert into "articles" ("userId", "imgUrl", "articleTypeId", "primaryColor",
+                            "secondaryColor", "colorCategoryId", "secondaryColorCategoryId")
+                values ($1, $2, $3, $4, $5, $6, $7)
+                returning *
   `;
   const params = [1, imgUrl, articleTypeId, primaryColor, secondaryColor, colorCategoryId, secondaryColorCategoryId];
   db.query(sql, params)
@@ -85,12 +109,12 @@ app.use(staticMiddleware);
 
 app.get('/api/inventory/1', (req, res, next) => {
   const sql = `
-  select "articleId",
-         "imgUrl",
-         "primaryColor",
-         "secondaryColor"
-    from "articles"
-    where "userId" = 1
+    select "articleId",
+          "imgUrl",
+          "primaryColor",
+          "secondaryColor"
+      from "articles"
+      where "userId" = 1
   `;
   db.query(sql)
     .then(result => {
@@ -113,9 +137,9 @@ app.get('/api/inventory/1/:articleType', (req, res, next) => {
   const articleTypeId = articleTypeIds[articleType];
   const sql = `
     select "articleId",
-           "imgUrl",
-           "primaryColor",
-           "secondaryColor"
+            "imgUrl",
+            "primaryColor",
+            "secondaryColor"
         from "articles"
         where "userId" = 1
         AND "articleTypeId" = $1
@@ -156,15 +180,15 @@ app.get('/api/inventory/1/:articleType/:color', (req, res, next) => {
   const articleTypeId = articleTypeIds[articleType];
   const colorId = colorIds[color];
   const sql = `
-       select "articleId",
-           "imgUrl",
-           "primaryColor",
-           "secondaryColor",
-           "articleTypeId"
-        from "articles"
-        where "userId" = 1
-        AND "articleTypeId" = $1
-        AND ("colorCategoryId" = $2 OR "secondaryColorCategoryId" = $2);
+    select "articleId",
+        "imgUrl",
+        "primaryColor",
+        "secondaryColor",
+        "articleTypeId"
+    from "articles"
+    where "userId" = 1
+    AND "articleTypeId" = $1
+    AND ("colorCategoryId" = $2 OR "secondaryColorCategoryId" = $2);
   `;
   const params = [articleTypeId, colorId];
   db.query(sql, params)

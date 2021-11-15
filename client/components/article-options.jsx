@@ -48,6 +48,7 @@ export default class ArticleOptions extends React.Component {
       .then(articles => {
         this.setState({
           colorCategory,
+          activeIndex: 0,
           articleOptions: articles,
           currentArticle: articles[0]
         });

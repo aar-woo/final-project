@@ -110,7 +110,7 @@ app.delete('/api/inventory/:userId/:articleId', (req, res, next) => {
   const sql = `
     delete from "articles"
       where "articleId" = $1
-      AND userId = $2
+      AND "userId" = $2
       returning *;
   `;
   const params = [articleId, userId];

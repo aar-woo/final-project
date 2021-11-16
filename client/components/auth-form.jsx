@@ -20,6 +20,7 @@ export default class AuthForm extends React.Component {
 
   handleSubmit() {
     event.preventDefault();
+    const { action } = this.props;
     const req = {
       method: 'POST',
       headers: {
@@ -27,19 +28,29 @@ export default class AuthForm extends React.Component {
       },
       body: JSON.stringify(this.state)
     };
-    fetch('/api/auth/sign-up', req)
+    fetch(`/api/auth/${action}`, req)
       .then(res => res.json())
       .then(result => {
-        this.setState({
-          username: '',
-          password: ''
-        });
+        if (action === 'sign-up') {
+          window.location.hash = 'sign-in';
+        } else if (result.user && result.token) {
+          this.props.onSignIn(result);
+        }
       })
       .catch(err => console.error(err));
   }
 
   render() {
-
+    const { action } = this.props;
+    const alternateActionHref = action === 'sign-up'
+      ? '#sign-in'
+      : '#sign-up';
+    const alternatActionText = action === 'sign-up'
+      ? 'Login instead'
+      : 'Sign up now';
+    const submitButtonText = action === 'sign-up'
+      ? 'Sign Up'
+      : 'Login';
     return (
       <form onSubmit={this.handleSubmit}>
         <div className="input-group mb-3">
@@ -52,8 +63,13 @@ export default class AuthForm extends React.Component {
           <input required type="password" value={this.state.password} className="form-control"
             placeholder="Password" aria-label="Password" name="password" aria-describedby="basic-addon1" onChange={this.handleChange}/>
         </div>
-        <div className="d-grid gap-2 mb-4">
-          <button className="btn btn-primary" type="submit">Sign Up</button>
+        <div className="d-grid gap-2 mb-3">
+          <button className="btn btn-primary" type="submit">{submitButtonText}</button>
+        </div>
+        <div className="row mb-4">
+          <a className="text-muted" href={alternateActionHref}>
+            {alternatActionText}
+          </a>
         </div>
       </form>
     );

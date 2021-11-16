@@ -1,4 +1,5 @@
 import React from 'react';
+import AppContext from '../lib/app-context';
 
 export default class Inventory extends React.Component {
   constructor(props) {
@@ -12,7 +13,14 @@ export default class Inventory extends React.Component {
   }
 
   componentDidMount() {
-    fetch('/api/inventory/1')
+    const userId = this.context.user.userId;
+    const token = this.context.token;
+
+    fetch(`/api/inventory/${userId}`, {
+      headers: {
+        'x-access-token': token
+      }
+    })
       .then(res => res.json())
       .then(articles => this.setState({ articles }))
       .catch(err => console.error(err));
@@ -20,9 +28,15 @@ export default class Inventory extends React.Component {
 
   handleTypeSelect(event) {
     const articleType = event.target.value;
+    const userId = this.context.user.userId;
+    const token = this.context.token;
     let url;
     articleType === 'articles' ? url = '' : url = articleType;
-    fetch(`/api/inventory/1/${url}`)
+    fetch(`/api/inventory/${userId}/${url}`, {
+      headers: {
+        'x-access-token': token
+      }
+    })
       .then(res => res.json())
       .then(articles => this.setState({
         articles,
@@ -33,14 +47,18 @@ export default class Inventory extends React.Component {
 
   handleDelete(event) {
     const articleId = parseInt(event.target.getAttribute('datakey'));
+    const token = this.context.token;
     let articleIndex;
     for (let i = 0; i < this.state.articles.length; i++) {
       if (this.state.articles[i].articleId === articleId) {
         articleIndex = i;
       }
     }
-    fetch(`/api/inventory/1/${articleId}`, {
-      method: 'DELETE'
+    fetch(`/api/inventory/${articleId}`, {
+      method: 'DELETE',
+      headers: {
+        'x-access-token': token
+      }
     })
       .then(res => res.text())
       .then(res => {
@@ -164,3 +182,5 @@ function NoArticlesHeader(props) {
     </div>
   );
 }
+
+Inventory.contextType = AppContext;

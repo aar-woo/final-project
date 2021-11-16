@@ -3,6 +3,8 @@ import Navbar from '../components/navbar';
 import AppDrawer from '../components/app-drawer';
 import Outfit from '../components/outfit';
 import { Spinner } from 'reactstrap';
+import AppContext from '../lib/app-context';
+import Redirect from '../components/redirect';
 
 export default class OutfitsPage extends React.Component {
   constructor(props) {
@@ -15,7 +17,14 @@ export default class OutfitsPage extends React.Component {
   }
 
   componentDidMount() {
-    fetch('/api/outfits/1')
+    const userId = this.context.user.userId;
+    const token = this.context.token;
+
+    fetch(`/api/outfits/${userId}`, {
+      headers: {
+        'x-access-token': token
+      }
+    })
       .then(res => res.json())
       .then(outfits => {
         this.setState({
@@ -49,6 +58,8 @@ export default class OutfitsPage extends React.Component {
   }
 
   render() {
+    if (!this.context.user) return <Redirect to="sign-in" />;
+
     return (
       <>
         <Navbar pageHeader='Outfits' />
@@ -60,3 +71,5 @@ export default class OutfitsPage extends React.Component {
     );
   }
 }
+
+OutfitsPage.contextType = AppContext;

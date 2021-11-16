@@ -86,7 +86,7 @@ app.post('/api/inventory', uploadsMiddleware, (req, res, next) => {
     throw new ClientError(401, 'Invalid article, articleTypeId, primaryColor, and colorCategoryId are required.');
   }
   const userId = req.user.userId;
-  const imgUrl = `/images/${req.file.filename}`;
+  const imgUrl = req.file.location;
 
   const sql = `
     insert into "articles" ("userId", "imgUrl", "articleTypeId", "primaryColor",

@@ -154,7 +154,6 @@ export default class UploadForm extends React.Component {
   handleSubmit(event) {
     event.preventDefault();
     const formData = new FormData();
-    const user = this.context.user;
     const token = this.context.token;
 
     formData.append('colorCategoryId', this.state.colorCategoryId);
@@ -163,7 +162,6 @@ export default class UploadForm extends React.Component {
     formData.append('secondaryColor', this.state.secondaryColor);
     formData.append('articleTypeId', this.state.articleTypeId);
     formData.append('image', this.state.imgFile);
-    formData.append('userId', user.userId);
 
     fetch('/api/inventory', {
       method: 'POST',

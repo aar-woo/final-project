@@ -47,7 +47,7 @@ export default class Inventory extends React.Component {
 
   handleDelete(event) {
     const articleId = parseInt(event.target.getAttribute('datakey'));
-    const userId = this.context.user.userId;
+    const user = this.context.user;
     const token = this.context.token;
     let articleIndex;
     for (let i = 0; i < this.state.articles.length; i++) {
@@ -55,11 +55,12 @@ export default class Inventory extends React.Component {
         articleIndex = i;
       }
     }
-    fetch(`/api/inventory/${userId}/${articleId}`, {
+    fetch(`/api/inventory/${articleId}`, {
       method: 'DELETE',
       headers: {
         'x-access-token': token
-      }
+      },
+      body: JSON.stringify(user)
     })
       .then(res => res.text())
       .then(res => {

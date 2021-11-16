@@ -78,11 +78,10 @@ app.post('/api/auth/sign-in', (req, res, next) => {
 
 app.use(authorizationMiddleware);
 
-app.post('/api/inventory/:userId', uploadsMiddleware, (req, res, next) => {
+app.post('/api/inventory', uploadsMiddleware, (req, res, next) => {
   const {
-    articleTypeId, primaryColor, secondaryColor, colorCategoryId, secondaryColorCategoryId
+    userId, articleTypeId, primaryColor, secondaryColor, colorCategoryId, secondaryColorCategoryId
   } = req.body;
-  const userId = req.params.userId;
   if (!articleTypeId || !primaryColor || !colorCategoryId) {
     throw new ClientError(401, 'Invalid article, articleTypeId, primaryColor, and colorCategoryId are required.');
   }
@@ -104,9 +103,9 @@ app.post('/api/inventory/:userId', uploadsMiddleware, (req, res, next) => {
     .catch(err => next(err));
 });
 
-app.delete('/api/inventory/:userId/:articleId', (req, res, next) => {
+app.delete('/api/inventory/:articleId', (req, res, next) => {
   const articleId = req.params.articleId;
-  const userId = req.params.userId;
+  const userId = req.user.userId;
   const sql = `
     delete from "articles"
       where "articleId" = $1
@@ -125,9 +124,9 @@ app.delete('/api/inventory/:userId/:articleId', (req, res, next) => {
     .catch(err => next(err));
 });
 
-app.post('/api/outfits/:userId', (req, res, next) => {
+app.post('/api/outfits', (req, res, next) => {
   const { topArticleId, bottomArticleId, shoesArticleId } = req.body;
-  const userId = req.params.userId;
+  const userId = req.user.userId;
   if (!topArticleId || !bottomArticleId || !shoesArticleId) {
     throw new ClientError(401, 'Invalid outfit, requires top, bottom, and shoes');
   }

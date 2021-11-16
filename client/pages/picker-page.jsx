@@ -37,15 +37,17 @@ export default class PickerPage extends React.Component {
   }
 
   addOutfit() {
-    const userId = this.context.user.userId;
+    const user = this.context.user;
     const token = this.context.token;
-    fetch(`/api/outfits/${userId}`, {
+    const reqBody = this.state;
+    reqBody.user = user;
+    fetch('/api/outfits', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
         'x-access-token': token
       },
-      body: JSON.stringify(this.state)
+      body: JSON.stringify(reqBody)
     })
       .then(res => res.json())
       .then(data => {

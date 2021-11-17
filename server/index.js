@@ -18,6 +18,8 @@ const db = new pg.Pool({
 
 const app = express();
 
+app.use(staticMiddleware);
+
 app.use(express.json());
 
 app.post('/api/auth/sign-up', (req, res, next) => {
@@ -143,8 +145,6 @@ app.post('/api/outfits', (req, res, next) => {
     })
     .catch(err => next(err));
 });
-
-app.use(staticMiddleware);
 
 app.get('/api/inventory/:userId', (req, res, next) => {
   const userId = req.params.userId;

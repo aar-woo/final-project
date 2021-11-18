@@ -102,3 +102,7 @@ li:hover {
 .object-fit-contain {
   object-fit: contain;
 }
+
+.spinner-min-height {
+  min-height: 14rem;
+}

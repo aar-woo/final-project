@@ -5,6 +5,7 @@ import colorConvert from 'color-convert';
 import Resizer from 'react-image-file-resizer';
 import ColorSelect from './color-select';
 import AppContext from '../lib/app-context';
+import { Spinner } from 'reactstrap';
 
 const colorThief = new ColorThiefClass();
 
@@ -14,7 +15,7 @@ export default class UploadForm extends React.Component {
     this.state = {
       img: 'images/hoodiePlaceholder.png',
       imgFile: null,
-      imgLoaded: false,
+      imgLoaded: true, // check if this messes anything else up
       primaryColor: '',
       secondaryColor: '',
       colorCategory: 'Color',
@@ -175,7 +176,7 @@ export default class UploadForm extends React.Component {
         this.setState({
           img: 'images/hoodiePlaceholder.png',
           imgFile: null,
-          imgLoaded: false,
+          imgLoaded: true,
           primaryColor: '',
           secondaryColor: '',
           colorCategory: 'Color',
@@ -194,6 +195,14 @@ export default class UploadForm extends React.Component {
   render() {
     let primaryColorSelect;
     let secondaryColorSelect;
+    let spinnerClass = 'd-none';
+    let imgClass;
+    if (this.state.img === 'images/hoodiePlaceholder.png') {
+      imgClass = 'card-img-top img-thumbnail object-fit-contain border-dark';
+    } else {
+      imgClass = 'card-img-top img-thumbnail border-dark';
+    }
+    let spinnerImgClass = 'col-md-6 col-lg-5';
     if (this.state.colorCategorySelect === 'Primary') {
       primaryColorSelect = 'col-8 d-block d-lg-none';
       secondaryColorSelect = 'secondary-select d-none';
@@ -201,11 +210,19 @@ export default class UploadForm extends React.Component {
       primaryColorSelect = 'd-none';
       secondaryColorSelect = 'secondary-select col-8 d-block d-lg-none';
     }
+    if (!this.state.imgLoaded) {
+      spinnerClass = '';
+      imgClass = 'd-none';
+      spinnerImgClass = 'col-md-6 col-lg-5 d-flex align-items-center justify-content-center spinner-min-height';
+    }
     return (
       <>
         <div className="row g-0">
-          <div className="col-md-6 col-lg-5">
-            <img src={this.state.img} id="img" className="card-img-top img-thumbnail object-fit-contain border-dark" onLoad={this.handleImgLoad}/>
+          <div className={spinnerImgClass}>
+            <div className="col-12 d-flex align-items-center justify-content-center" >
+              <Spinner className={spinnerClass} />
+            </div>
+            <img src={this.state.img} id="img" className={imgClass} onLoad={this.handleImgLoad}/>
           </div>
           <div className="col-md-6 col-lg-7">
             <form onSubmit={this.handleSubmit}>

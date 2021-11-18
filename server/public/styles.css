@@ -98,3 +98,11 @@ li:hover {
 .auth-img {
   width: 7rem !important;
 }
+
+.object-fit-contain {
+  object-fit: contain;
+}
+
+.spinner-min-height {
+  min-height: 14rem;
+}

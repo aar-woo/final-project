@@ -5,6 +5,7 @@ import colorConvert from 'color-convert';
 import Resizer from 'react-image-file-resizer';
 import ColorSelect from './color-select';
 import AppContext from '../lib/app-context';
+import { Spinner } from 'reactstrap';
 
 const colorThief = new ColorThiefClass();
 
@@ -14,7 +15,7 @@ export default class UploadForm extends React.Component {
     this.state = {
       img: 'images/hoodiePlaceholder.png',
       imgFile: null,
-      imgLoaded: false,
+      imgLoaded: true,
       primaryColor: '',
       secondaryColor: '',
       colorCategory: 'Color',
@@ -23,7 +24,8 @@ export default class UploadForm extends React.Component {
       secondaryColorCategoryId: null,
       articleType: '',
       articleTypeId: null,
-      colorCategorySelect: 'Primary'
+      colorCategorySelect: 'Primary',
+      networkError: false
     };
     this.fileInputRef = React.createRef();
     this.fileChangedHandler = this.fileChangedHandler.bind(this);
@@ -38,7 +40,8 @@ export default class UploadForm extends React.Component {
     const img = URL.createObjectURL(event.target.files[0]);
     this.setState({
       img,
-      imgLoaded: false
+      imgLoaded: false,
+      networkError: false
     });
     let fileInput = false;
     if (event.target.files[0]) {
@@ -175,7 +178,7 @@ export default class UploadForm extends React.Component {
         this.setState({
           img: 'images/hoodiePlaceholder.png',
           imgFile: null,
-          imgLoaded: false,
+          imgLoaded: true,
           primaryColor: '',
           secondaryColor: '',
           colorCategory: 'Color',
@@ -188,12 +191,26 @@ export default class UploadForm extends React.Component {
         });
         this.fileInputRef.current.value = null;
       })
-      .catch(err => console.error(err));
+      .catch(err => {
+        console.error(err);
+        this.setState({
+          networkError: true
+        });
+      });
   }
 
   render() {
     let primaryColorSelect;
     let secondaryColorSelect;
+    let spinnerClass = 'd-none';
+    let networkErrorClass = 'd-none';
+    let spinnerImgClass = 'col-md-6 col-lg-5';
+    let imgClass;
+    if (this.state.img === 'images/hoodiePlaceholder.png') {
+      imgClass = 'card-img-top img-thumbnail object-fit-contain border-dark';
+    } else {
+      imgClass = 'card-img-top img-thumbnail border-dark';
+    }
     if (this.state.colorCategorySelect === 'Primary') {
       primaryColorSelect = 'col-8 d-block d-lg-none';
       secondaryColorSelect = 'secondary-select d-none';
@@ -201,11 +218,26 @@ export default class UploadForm extends React.Component {
       primaryColorSelect = 'd-none';
       secondaryColorSelect = 'secondary-select col-8 d-block d-lg-none';
     }
+    if (!this.state.imgLoaded) {
+      spinnerClass = '';
+      imgClass = 'd-none';
+      spinnerImgClass = 'col-md-6 col-lg-5 d-flex align-items-center justify-content-center spinner-min-height';
+    }
+    if (this.state.networkError) {
+      networkErrorClass = 'text-center';
+      imgClass = 'd-none';
+      spinnerImgClass = 'col-md-6 col-lg-5 d-flex align-items-center justify-content-center spinner-min-height';
+    }
+
     return (
       <>
         <div className="row g-0">
-          <div className="col-md-6 col-lg-5">
-            <img src={this.state.img} id="img" className="card-img-top img-thumbnail border-dark" onLoad={this.handleImgLoad}/>
+          <div className={spinnerImgClass}>
+            <div className="col-12 d-flex align-items-center justify-content-center" >
+              <Spinner className={spinnerClass} />
+              <h4 className={networkErrorClass}>Sorry, there was an error connecting to the network!</h4>
+            </div>
+            <img src={this.state.img} id="img" className={imgClass} onLoad={this.handleImgLoad}/>
           </div>
           <div className="col-md-6 col-lg-7">
             <form onSubmit={this.handleSubmit}>
@@ -243,20 +275,6 @@ export default class UploadForm extends React.Component {
                 </div>
               </div>
             </form>
-          </div>
-        </div>
-        <div className="container bottom-container fixed-bottom bg-dark d-flex justify-content-center text-center d-sm-none">
-          <div className="camera-img position-fixed">
-            <label htmlFor="camera-capture" className="">
-              <img src="images/camera.png" className="w-25"/>
-            </label>
-          </div>
-          <div className="row mt-5">
-            <div className="col-12">
-              <button type="button" className="btn btn-secondary">
-                <label htmlFor="camera-capture">Take A Photo</label></button>
-                <input className="d-none" type="file" id="camera-capture" accept="image/*" capture onChange={this.fileChangedHandler}/>
-            </div>
           </div>
         </div>
       </>

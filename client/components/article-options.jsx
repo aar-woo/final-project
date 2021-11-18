@@ -1,5 +1,5 @@
 import React from 'react';
-import { Carousel, CarouselItem, CarouselControl, CarouselIndicators } from 'reactstrap';
+import { Carousel, CarouselItem, CarouselControl, CarouselIndicators, Spinner } from 'reactstrap';
 import AppContext from '../lib/app-context';
 import ColorSelect from './color-select';
 delete Carousel.childContextTypes; /* Was getting a warning to define a getChildContext method but carousel still worked, reacstrap library using legacy context
@@ -18,20 +18,23 @@ export default class ArticleOptions extends React.Component {
           isInitialPlaceholder: true
         }
       ],
-      activeIndex: 0,
-      colorCategory: '',
       currentArticle: {
         imgUrl: `images/${articleType}Placeholder.png`,
         articleId: 0,
         isPlaceholder: true,
         isInitialPlaceholder: true
-      }
+      },
+      activeIndex: 0,
+      colorCategory: '',
+      networkError: false,
+      articlesLoaded: true
     };
     this.next = this.next.bind(this);
     this.previous = this.previous.bind(this);
     this.goToIndex = this.goToIndex.bind(this);
     this.handleColorSelect = this.handleColorSelect.bind(this);
     this.selectArticle = this.selectArticle.bind(this);
+    this.onLoad = this.onLoad.bind(this);
   }
 
   handleColorSelect(event) {
@@ -50,10 +53,16 @@ export default class ArticleOptions extends React.Component {
           colorCategory,
           activeIndex: 0,
           articleOptions: articles,
-          currentArticle: articles[0]
+          currentArticle: articles[0],
+          articlesLoaded: false
         });
       })
-      .catch(err => (console.error(err)));
+      .catch(err => {
+        console.error(err);
+        this.setState({
+          networkError: true
+        });
+      });
   }
 
   next() {
@@ -105,11 +114,21 @@ export default class ArticleOptions extends React.Component {
     });
   }
 
+  onLoad() {
+    this.setState({
+      articlesLoaded: true
+    });
+  }
+
   render() {
     const articleTypeHeader = this.props.articleType.charAt(0).toUpperCase() + this.props.articleType.slice(1);
     const currentArticle = this.state.currentArticle;
     let numItems;
     let numItemsClasses;
+    let networkErrorClass = 'd-none';
+    let spinnerClass = 'd-none';
+    let spinnerImgClass = 'col-md-6 col-lg-5 d-none';
+    let carouselClass = 'mw-100';
 
     if (!currentArticle.isInitialPlaceholder && currentArticle.isPlaceholder) {
       numItems = 'No matching items';
@@ -121,14 +140,25 @@ export default class ArticleOptions extends React.Component {
     } else {
       numItems = `${this.state.articleOptions.length} Items`;
     }
+    if (!this.state.articlesLoaded) {
+      spinnerClass = '';
+      spinnerImgClass = 'col-12 d-flex align-items-center justify-content-center spinner-min-height';
+      carouselClass = 'd-none';
+    }
+    if (this.state.networkError) {
+      networkErrorClass = 'mt-4';
+    }
 
     return (
       <div className="container container-max-width mt-3" onMouseLeave={this.selectArticle}>
         <div className="card border border-dark shadow">
           <div className="row d-flex justify-content-start">
             <div className="col-6 col-sm-4 d-flex justify-content-start">
+              <div className={spinnerImgClass}>
+                <Spinner className={spinnerClass} />
+              </div>
               <Carousel
-                className="mw-100"
+                className={carouselClass}
                 activeIndex={this.state.activeIndex}
                 next={this.next}
                 previous={this.previous}
@@ -142,7 +172,7 @@ export default class ArticleOptions extends React.Component {
                 {
                   this.state.articleOptions.map(article => (
                     <CarouselItem key={article.articleId}>
-                      <img src={article.imgUrl} className="w-100 border border-dark" />
+                      <img src={article.imgUrl} className="w-100 border border-dark" onLoad={this.onLoad}/>
                     </CarouselItem>
                   ))
                 }
@@ -173,6 +203,9 @@ export default class ArticleOptions extends React.Component {
                     <span className={numItemsClasses}>{numItems}</span>
                   </div>
                 </div>
+              </div>
+              <div className="row">
+                <h6 className={networkErrorClass}>Sorry, there was an error connecting to the network!</h6>
               </div>
             </div>
           </div>

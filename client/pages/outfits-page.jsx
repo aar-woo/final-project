@@ -12,7 +12,8 @@ export default class OutfitsPage extends React.Component {
 
     this.state = {
       outfits: [],
-      isLoading: true
+      isLoading: true,
+      networkError: false
     };
   }
 
@@ -32,7 +33,13 @@ export default class OutfitsPage extends React.Component {
           isLoading: false
         });
       })
-      .catch(err => console.error(err));
+      .catch(err => {
+        console.error(err);
+        this.setState({
+          isLoading: false,
+          networkError: true
+        });
+      });
   }
 
   renderPage() {
@@ -40,6 +47,11 @@ export default class OutfitsPage extends React.Component {
     if (this.state.isLoading) {
       return (
         <Spinner className="mt-5 mx-auto"></Spinner>
+      );
+    }
+    if (this.state.networkError) {
+      return (
+        <h4 className="mt-5 text-center">Sorry, there was an error connecting to the network!</h4>
       );
     }
     if (this.state.outfits.length === 0) {

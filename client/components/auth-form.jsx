@@ -5,7 +5,8 @@ export default class AuthForm extends React.Component {
     super(props);
     this.state = {
       username: '',
-      password: ''
+      password: '',
+      networkError: false
     };
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleChange = this.handleChange.bind(this);
@@ -37,10 +38,19 @@ export default class AuthForm extends React.Component {
           this.props.onSignIn(result);
         }
       })
-      .catch(err => console.error(err));
+      .catch(err => {
+        console.error(err);
+        this.setState({
+          networkError: true
+        });
+      });
   }
 
   render() {
+    let networkErrorClass = 'd-none';
+    if (this.state.networkError) {
+      networkErrorClass = 'col-8 d-flex justify-content-end';
+    }
     const { action } = this.props;
     const alternateActionHref = action === 'sign-up'
       ? '#sign-in'
@@ -67,9 +77,14 @@ export default class AuthForm extends React.Component {
           <button className="btn btn-primary" type="submit">{submitButtonText}</button>
         </div>
         <div className="row mb-4">
-          <a className="text-muted" href={alternateActionHref}>
-            {alternatActionText}
-          </a>
+          <div className="col-4">
+            <a className="text-muted" href={alternateActionHref}>
+              {alternatActionText}
+            </a>
+          </div>
+          <div className={networkErrorClass}>
+            <h6>Sorry, there was an error connecting to the network!</h6>
+          </div>
         </div>
       </form>
     );

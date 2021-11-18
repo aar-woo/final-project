@@ -18,14 +18,15 @@ export default class ArticleOptions extends React.Component {
           isInitialPlaceholder: true
         }
       ],
-      activeIndex: 0,
-      colorCategory: '',
       currentArticle: {
         imgUrl: `images/${articleType}Placeholder.png`,
         articleId: 0,
         isPlaceholder: true,
         isInitialPlaceholder: true
-      }
+      },
+      activeIndex: 0,
+      colorCategory: '',
+      networkError: false
     };
     this.next = this.next.bind(this);
     this.previous = this.previous.bind(this);
@@ -53,7 +54,12 @@ export default class ArticleOptions extends React.Component {
           currentArticle: articles[0]
         });
       })
-      .catch(err => (console.error(err)));
+      .catch(err => {
+        console.error(err);
+        this.setState({
+          networkError: true
+        });
+      });
   }
 
   next() {
@@ -110,6 +116,7 @@ export default class ArticleOptions extends React.Component {
     const currentArticle = this.state.currentArticle;
     let numItems;
     let numItemsClasses;
+    let networkErrorClass = 'd-none';
 
     if (!currentArticle.isInitialPlaceholder && currentArticle.isPlaceholder) {
       numItems = 'No matching items';
@@ -120,6 +127,10 @@ export default class ArticleOptions extends React.Component {
       numItems = '1 Item';
     } else {
       numItems = `${this.state.articleOptions.length} Items`;
+    }
+
+    if (this.state.networkError) {
+      networkErrorClass = 'mt-4';
     }
 
     return (
@@ -173,6 +184,9 @@ export default class ArticleOptions extends React.Component {
                     <span className={numItemsClasses}>{numItems}</span>
                   </div>
                 </div>
+              </div>
+              <div className="row">
+                <h6 className={networkErrorClass}>Sorry, there was an error connecting to the network!</h6>
               </div>
             </div>
           </div>

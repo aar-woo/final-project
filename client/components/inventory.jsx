@@ -8,7 +8,8 @@ export default class Inventory extends React.Component {
     this.state = {
       articles: [],
       articleType: 'articles',
-      isLoading: true
+      isLoading: true,
+      networkError: false
     };
     this.handleTypeSelect = this.handleTypeSelect.bind(this);
     this.handleDelete = this.handleDelete.bind(this);
@@ -28,7 +29,13 @@ export default class Inventory extends React.Component {
         articles,
         isLoading: false
       }))
-      .catch(err => console.error(err));
+      .catch(err => {
+        console.error(err);
+        this.setState({
+          isLoading: false,
+          networkError: true
+        });
+      });
   }
 
   handleTypeSelect(event) {
@@ -80,6 +87,11 @@ export default class Inventory extends React.Component {
         <Spinner className="mt-5 mx-auto"></Spinner>
       );
     }
+    if (this.state.networkError) {
+      return (
+        <h4 className="mt-5 text-center">Sorry, there was an error connecting to the network!</h4>
+      );
+    }
     if (this.state.articles.length === 0) {
       let placeholderType;
       if (this.state.articleType === 'articles') {
@@ -99,7 +111,7 @@ export default class Inventory extends React.Component {
 
   render() {
     let emptyHeader = 'd-none';
-    if (this.state.articles.length === 0 && !this.state.isLoading) {
+    if (this.state.articles.length === 0 && !this.state.isLoading && !this.state.networkError) {
       emptyHeader = 'col-12 col-md-6 d-flex align-items-end justify-content-end mt-3';
     }
     return (

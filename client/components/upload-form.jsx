@@ -15,7 +15,7 @@ export default class UploadForm extends React.Component {
     this.state = {
       img: 'images/hoodiePlaceholder.png',
       imgFile: null,
-      imgLoaded: true, // check if this messes anything else up
+      imgLoaded: true,
       primaryColor: '',
       secondaryColor: '',
       colorCategory: 'Color',
@@ -24,7 +24,8 @@ export default class UploadForm extends React.Component {
       secondaryColorCategoryId: null,
       articleType: '',
       articleTypeId: null,
-      colorCategorySelect: 'Primary'
+      colorCategorySelect: 'Primary',
+      networkError: false
     };
     this.fileInputRef = React.createRef();
     this.fileChangedHandler = this.fileChangedHandler.bind(this);
@@ -39,7 +40,8 @@ export default class UploadForm extends React.Component {
     const img = URL.createObjectURL(event.target.files[0]);
     this.setState({
       img,
-      imgLoaded: false
+      imgLoaded: false,
+      networkError: false
     });
     let fileInput = false;
     if (event.target.files[0]) {
@@ -189,13 +191,19 @@ export default class UploadForm extends React.Component {
         });
         this.fileInputRef.current.value = null;
       })
-      .catch(err => console.error(err));
+      .catch(err => {
+        console.error(err);
+        this.setState({
+          networkError: true
+        });
+      });
   }
 
   render() {
     let primaryColorSelect;
     let secondaryColorSelect;
     let spinnerClass = 'd-none';
+    let networkErrorClass = 'd-none';
     let imgClass;
     if (this.state.img === 'images/hoodiePlaceholder.png') {
       imgClass = 'card-img-top img-thumbnail object-fit-contain border-dark';
@@ -215,12 +223,20 @@ export default class UploadForm extends React.Component {
       imgClass = 'd-none';
       spinnerImgClass = 'col-md-6 col-lg-5 d-flex align-items-center justify-content-center spinner-min-height';
     }
+    if (this.state.networkError) {
+      networkErrorClass = 'text-center';
+      imgClass = 'd-none';
+      spinnerImgClass = 'col-md-6 col-lg-5 d-flex align-items-center justify-content-center spinner-min-height';
+    }
+
     return (
       <>
+
         <div className="row g-0">
           <div className={spinnerImgClass}>
             <div className="col-12 d-flex align-items-center justify-content-center" >
               <Spinner className={spinnerClass} />
+              <h4 className={networkErrorClass}>Sorry, there was an error connecting to the network!</h4>
             </div>
             <img src={this.state.img} id="img" className={imgClass} onLoad={this.handleImgLoad}/>
           </div>

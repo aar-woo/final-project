@@ -11,13 +11,6 @@ ul {
   list-style-type: none;
 }
 
-.primary-square,
-.secondary-square {
-  border: 2.5px solid black;
-  border-radius: 2px;
-  cursor: pointer;
-}
-
 .primary-square {
   width: 2rem;
   height: 2rem;
@@ -28,19 +21,20 @@ ul {
   height: 1.5rem;
 }
 
-.bottom-container {
-  height: 10rem;
+.primary-square,
+.secondary-square {
+  border: 2.5px solid black;
+  border-radius: 2px;
 }
 
-.camera-img {
-  bottom: 7.5rem;
+.upload-squares .primary-square,
+.upload-squares .secondary-square {
+  cursor: pointer;
 }
 
 .inventory-article .primary-square,
-.secondary-square {
+.inventory-article .secondary-square {
   border: 2px solid black;
-  border-radius: 2px;
-  cursor: auto;
 }
 
 .inventory-article .primary-square {
@@ -76,10 +70,6 @@ ul {
 .icon-x-large {
   font-size: x-large;
   cursor: pointer;
-}
-
-.picker .primary-square {
-  cursor: auto;
 }
 
 li:hover {

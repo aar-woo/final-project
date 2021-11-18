@@ -98,3 +98,7 @@ li:hover {
 .auth-img {
   width: 7rem !important;
 }
+
+.object-fit-contain {
+  object-fit: contain;
+}

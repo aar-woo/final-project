@@ -205,7 +205,7 @@ export default class UploadForm extends React.Component {
       <>
         <div className="row g-0">
           <div className="col-md-6 col-lg-5">
-            <img src={this.state.img} id="img" className="card-img-top img-thumbnail border-dark" onLoad={this.handleImgLoad}/>
+            <img src={this.state.img} id="img" className="card-img-top img-thumbnail object-fit-contain border-dark" onLoad={this.handleImgLoad}/>
           </div>
           <div className="col-md-6 col-lg-7">
             <form onSubmit={this.handleSubmit}>

@@ -48,13 +48,13 @@ export default class App extends React.Component {
     if (route.path === 'sign-in' || route.path === 'sign-up') {
       return <AuthPage />;
     }
-    if (route.path === '') {
+    if (route.path === 'upload') {
       return <UploadPage />;
     }
     if (route.path === 'inventory') {
       return <InventoryPage />;
     }
-    if (route.path === 'picker') {
+    if (route.path === '') {
       return <PickerPage />;
     }
     if (route.path === 'outfits') {

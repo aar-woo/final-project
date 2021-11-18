@@ -19,7 +19,7 @@ export default function Outfit(props) {
   }
 
   return (
-    <div className="col-12 col-sm-6 col-lg-4 d-flex justify-content-center my-3">
+    <div className="col-12 col-sm-6 col-lg-4 col-xl-3 d-flex justify-content-center my-3">
       <div className="outfit-container border border-dark border-2 rounded-2 p-2 mt-4 bg-light">
         <h5>Outfit {outfitNum}</h5>
         <div className="row d-flex justify-content-center">

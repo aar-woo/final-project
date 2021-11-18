@@ -204,13 +204,13 @@ export default class UploadForm extends React.Component {
     let secondaryColorSelect;
     let spinnerClass = 'd-none';
     let networkErrorClass = 'd-none';
+    let spinnerImgClass = 'col-md-6 col-lg-5';
     let imgClass;
     if (this.state.img === 'images/hoodiePlaceholder.png') {
       imgClass = 'card-img-top img-thumbnail object-fit-contain border-dark';
     } else {
       imgClass = 'card-img-top img-thumbnail border-dark';
     }
-    let spinnerImgClass = 'col-md-6 col-lg-5';
     if (this.state.colorCategorySelect === 'Primary') {
       primaryColorSelect = 'col-8 d-block d-lg-none';
       secondaryColorSelect = 'secondary-select d-none';
@@ -231,7 +231,6 @@ export default class UploadForm extends React.Component {
 
     return (
       <>
-
         <div className="row g-0">
           <div className={spinnerImgClass}>
             <div className="col-12 d-flex align-items-center justify-content-center" >

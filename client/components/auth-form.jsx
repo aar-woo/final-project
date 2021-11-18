@@ -4,8 +4,8 @@ export default class AuthForm extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      username: '',
-      password: '',
+      username: 'demo',
+      password: 'password',
       networkError: false
     };
     this.handleSubmit = this.handleSubmit.bind(this);
@@ -49,7 +49,7 @@ export default class AuthForm extends React.Component {
   render() {
     let networkErrorClass = 'd-none';
     if (this.state.networkError) {
-      networkErrorClass = 'col-8 d-flex justify-content-end';
+      networkErrorClass = 'col-7 col-md-8 d-flex justify-content-end';
     }
     const { action } = this.props;
     const alternateActionHref = action === 'sign-up'
@@ -77,7 +77,7 @@ export default class AuthForm extends React.Component {
           <button className="btn btn-primary" type="submit">{submitButtonText}</button>
         </div>
         <div className="row mb-4">
-          <div className="col-4">
+          <div className="col-5 col-md-4">
             <a className="text-muted" href={alternateActionHref}>
               {alternatActionText}
             </a>

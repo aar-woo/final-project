@@ -1,5 +1,5 @@
-insert into "users" ("userName", "password")
-  values ('demo', 'password');
+insert into "users" ("username", "password")
+  values ('demo', '$argon2i$v=19$m=4096,t=3,p=1$MAljZDcj5w3iOz4w/Ad9qA$Lpd5dkap4UbvsMm3DiMueGYd8HVie6C5AY2hwKy92H4');
 
 insert into "colorCategories" ("colorCategoryId", "colorCategory")
   values (0, 'none'),
@@ -69,6 +69,7 @@ insert into "articles" ("articleTypeId", "imgUrl", "primaryColor", "secondaryCol
               (1, 'https://outfit-inventory.s3.us-west-1.amazonaws.com/1637275112742.JPEG',
               'blue', 'rgb(205, 205, 204)', 1, 8, 2),
               (3, 'https://outfit-inventory.s3.us-west-1.amazonaws.com/1637275203839.JPEG',
-              'black', 'grey', 1, 1, 3),
-              (1, 'https://outfit-inventory.s3.amazonaws.com/1637285467232.JPEG',
-              'rgb(161, 117, 9)', 'yellow', 1, 5, 5);
+              'black', 'grey', 1, 1, 3);
+
+insert into "outfits" ("topArticleId", "bottomArticleId", "shoesArticleId", "userId")
+      values (1, 4, 8, 1), (10, 16, 20, 1)

@@ -249,7 +249,7 @@ export default class UploadForm extends React.Component {
                     colorCategorySelect='Primary' onChange={this.handleColorSelect}/>
                   <ColorSelect classes={secondaryColorSelect} selectClasses='form-select secondary-select' colorCategory={this.state.secondaryColorCategory} value={this.state.secondaryColorCategory}
                     colorCategorySelect='Secondary' onChange={this.handleColorSelect} />
-                  <div className="col-4 col-lg-1 d-flex align-items-end align-items-lg-start ps-xs-0 ps-md-0 justify-content-around flex-lg-column mt-2 mt-lg-0" onClick={this.switchSelect}>
+                  <div className="upload-squares col-4 col-lg-1 d-flex align-items-end align-items-lg-start ps-xs-0 ps-md-0 justify-content-around flex-lg-column mt-2 mt-lg-0" onClick={this.switchSelect}>
                     <a><div className="primary-square" style={{ backgroundColor: `${this.state.primaryColor}` }}></div></a>
                     <a><div className="secondary-square mt-3" style={{ backgroundColor: `${this.state.secondaryColor}` }}></div></a>
                   </div>

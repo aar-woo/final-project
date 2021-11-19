@@ -89,7 +89,6 @@ app.post('/api/inventory', uploadsMiddleware, (req, res, next) => {
   }
   const userId = req.user.userId;
   const imgUrl = req.file.location;
-
   const sql = `
     insert into "articles" ("userId", "imgUrl", "articleTypeId", "primaryColor",
                             "secondaryColor", "colorCategoryId", "secondaryColorCategoryId")

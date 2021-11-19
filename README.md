@@ -49,6 +49,7 @@ https://user-images.githubusercontent.com/87718271/142544079-dd731d54-71d4-4f8d-
 ### System Requirements
 - Node.js 10 or higher
 - NPM 6 or higher
+- PostgreSQL
 
 ### Getting Started
 

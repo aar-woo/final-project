@@ -56,8 +56,8 @@ https://user-images.githubusercontent.com/87718271/142544079-dd731d54-71d4-4f8d-
 1. Clone the repository.
 
     ```shell
-    git clone https://github.com/aar-woo/final-project
-    cd final-project
+    git clone https://github.com/aar-woo/pick-a-fit
+    cd pick-a-fit
     ```
 2.  Install all dependencies with NPM.
     ```shell

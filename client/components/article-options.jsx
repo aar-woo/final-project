@@ -140,7 +140,7 @@ export default class ArticleOptions extends React.Component {
     } else {
       numItems = `${this.state.articleOptions.length} Items`;
     }
-    if (!this.state.articlesLoaded) {
+    if (!this.state.articlesLoaded && !currentArticle.isPlaceholder) {
       spinnerClass = '';
       spinnerImgClass = 'col-12 d-flex align-items-center justify-content-center spinner-min-height';
       carouselClass = 'd-none';

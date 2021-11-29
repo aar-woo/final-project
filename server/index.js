@@ -145,6 +145,19 @@ app.post('/api/outfits', (req, res, next) => {
     .catch(err => next(err));
 });
 
+async function queryDatabase(sql, params, res, next) {
+  try {
+    const results = await db.query(sql, params);
+    if (results.rows.length === 0) {
+      res.json([]);
+      return;
+    }
+    res.json(results.rows);
+  } catch (err) {
+    next(err);
+  }
+}
+
 app.get('/api/inventory/:userId', (req, res, next) => {
   const userId = req.params.userId;
   const sql = `
@@ -156,15 +169,7 @@ app.get('/api/inventory/:userId', (req, res, next) => {
       where "userId" = $1
   `;
   const params = [userId];
-  db.query(sql, params)
-    .then(result => {
-      if (result.rows.length === 0) {
-        res.json([]);
-        return;
-      }
-      res.json(result.rows);
-    })
-    .catch(err => next(err));
+  queryDatabase(sql, params, res, next);
 });
 
 app.get('/api/inventory/:userId/:articleType', (req, res, next) => {

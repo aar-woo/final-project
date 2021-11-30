@@ -22,6 +22,19 @@ app.use(staticMiddleware);
 
 app.use(express.json());
 
+async function queryDatabase(sql, params, res, next) {
+  try {
+    const results = await db.query(sql, params);
+    if (results.rows.length === 0) {
+      res.json([]);
+      return;
+    }
+    res.json(results.rows);
+  } catch (err) {
+    next(err);
+  }
+}
+
 app.post('/api/auth/sign-up', (req, res, next) => {
   const { username, password } = req.body;
   if (!username || !password) {
@@ -137,26 +150,9 @@ app.post('/api/outfits', (req, res, next) => {
       returning *
   `;
   const params = [topArticleId, bottomArticleId, shoesArticleId, userId];
-  db.query(sql, params)
-    .then(result => {
-      const [outfit] = result.rows;
-      res.status(201).json(outfit);
-    })
-    .catch(err => next(err));
-});
 
-async function queryDatabase(sql, params, res, next) {
-  try {
-    const results = await db.query(sql, params);
-    if (results.rows.length === 0) {
-      res.json([]);
-      return;
-    }
-    res.json(results.rows);
-  } catch (err) {
-    next(err);
-  }
-}
+  queryDatabase(sql, params, res, next);
+});
 
 app.get('/api/inventory/:userId', (req, res, next) => {
   const userId = req.params.userId;
@@ -192,15 +188,6 @@ app.get('/api/inventory/:userId/:articleType', (req, res, next) => {
   `;
   const params = [userId, articleTypeId];
   queryDatabase(sql, params, res, next);
-  // db.query(sql, params)
-  //   .then(result => {
-  //     if (result.rows.length === 0) {
-  //       res.json([]);
-  //       return;
-  //     }
-  //     res.json(result.rows);
-  //   })
-  //   .catch(err => next(err));
 });
 
 app.get('/api/inventory/:userId/:articleType/:color', (req, res, next) => {

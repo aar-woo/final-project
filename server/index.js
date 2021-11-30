@@ -191,15 +191,16 @@ app.get('/api/inventory/:userId/:articleType', (req, res, next) => {
         AND "articleTypeId" = $2
   `;
   const params = [userId, articleTypeId];
-  db.query(sql, params)
-    .then(result => {
-      if (result.rows.length === 0) {
-        res.json([]);
-        return;
-      }
-      res.json(result.rows);
-    })
-    .catch(err => next(err));
+  queryDatabase(sql, params, res, next);
+  // db.query(sql, params)
+  //   .then(result => {
+  //     if (result.rows.length === 0) {
+  //       res.json([]);
+  //       return;
+  //     }
+  //     res.json(result.rows);
+  //   })
+  //   .catch(err => next(err));
 });
 
 app.get('/api/inventory/:userId/:articleType/:color', (req, res, next) => {

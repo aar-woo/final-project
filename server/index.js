@@ -150,7 +150,6 @@ app.post('/api/outfits', (req, res, next) => {
       returning *
   `;
   const params = [topArticleId, bottomArticleId, shoesArticleId, userId];
-
   queryDatabase(sql, params, res, next);
 });
 
@@ -262,26 +261,7 @@ app.get('/api/outfits/:userId', (req, res, next) => {
     order by "o"."outfitId"
   `;
   const params = [userId];
-  db.query(sql, params)
-    .then(result => {
-      if (result.rows.length === 0) {
-        res.json([]);
-        return;
-      }
-      const articlesData = result.rows;
-      const outfitsArr = [];
-      let currOutfit = [];
-      for (let i = 0; i < articlesData.length; i++) {
-        currOutfit.push(articlesData[i]);
-        if (currOutfit.length === 3) {
-          outfitsArr.push(currOutfit);
-          currOutfit = [];
-        }
-      }
-      res.json(outfitsArr);
-
-    })
-    .catch(err => next(err));
+  queryDatabase(sql, params, res, next);
 });
 
 app.use(errorMiddleware);

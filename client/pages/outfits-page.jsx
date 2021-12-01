@@ -28,8 +28,18 @@ export default class OutfitsPage extends React.Component {
     })
       .then(res => res.json())
       .then(outfits => {
+        const articlesData = outfits;
+        const outfitsArr = [];
+        let currOutfit = [];
+        for (let i = 0; i < articlesData.length; i++) {
+          currOutfit.push(articlesData[i]);
+          if (currOutfit.length === 3) {
+            outfitsArr.push(currOutfit);
+            currOutfit = [];
+          }
+        }
         this.setState({
-          outfits,
+          outfits: outfitsArr,
           isLoading: false
         });
       })

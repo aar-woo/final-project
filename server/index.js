@@ -22,17 +22,22 @@ app.use(staticMiddleware);
 
 app.use(express.json());
 
-async function queryDatabase(sql, params, res, next) {
-  try {
-    const results = await db.query(sql, params);
-    if (results.rows.length === 0) {
-      res.json([]);
-      return;
-    }
-    res.json(results.rows);
-  } catch (err) {
-    next(err);
-  }
+// async function queryDatabase(sql, params, res, next) {
+//   try {
+//     const results = await db.query(sql, params);
+//     if (results.rows.length === 0) {
+//       res.json([]);
+//       return;
+//     }
+//     res.json(results.rows);
+//   } catch (err) {
+//     next(err);
+//   }
+// }
+
+async function queryDatabase(sql, params) {
+  const results = await db.query(sql, params);
+  return results.rows;
 }
 
 app.post('/api/auth/sign-up', (req, res, next) => {
@@ -164,7 +169,20 @@ app.get('/api/inventory/:userId', (req, res, next) => {
       where "userId" = $1
   `;
   const params = [userId];
-  queryDatabase(sql, params, res, next);
+  // queryDatabase(sql, params, res, next);
+  async function query() {
+    try {
+      const results = await queryDatabase(sql, params);
+      if (results.length === 0) {
+        res.json([]);
+        return;
+      }
+      res.json(results);
+    } catch (err) {
+      next(err);
+    }
+  }
+  query();
 });
 
 app.get('/api/inventory/:userId/:articleType', (req, res, next) => {

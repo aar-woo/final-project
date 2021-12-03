@@ -100,14 +100,13 @@ app.post('/api/inventory', uploadsMiddleware, (req, res, next) => {
   `;
   const params = [userId, imgUrl, articleTypeId, primaryColor, secondaryColor, colorCategoryId, secondaryColorCategoryId];
   async function query() {
-    try {
-      const results = await queryDatabase(sql, params);
-      res.status(201).json(results);
-    } catch (err) {
-      next(err);
-    }
+    const results = await queryDatabase(sql, params);
+    res.status(201).json(results);
   }
-  query();
+  query()
+    .catch(err => {
+      next(err);
+    });
 });
 
 app.delete('/api/inventory/:articleId', (req, res, next) => {
@@ -121,17 +120,16 @@ app.delete('/api/inventory/:articleId', (req, res, next) => {
   `;
   const params = [articleId, userId];
   async function query() {
-    try {
-      const results = await queryDatabase(sql, params);
-      if (!results) {
-        throw new ClientError(404, 'Article not found.');
-      }
-      res.status(204).json(results);
-    } catch (err) {
-      next(err);
+    const results = await queryDatabase(sql, params);
+    if (!results) {
+      throw new ClientError(404, 'Article not found.');
     }
+    res.status(204).json(results);
   }
-  query();
+  query()
+    .catch(err => {
+      next(err);
+    });
 });
 
 app.post('/api/outfits', (req, res, next) => {
@@ -147,18 +145,17 @@ app.post('/api/outfits', (req, res, next) => {
   `;
   const params = [topArticleId, bottomArticleId, shoesArticleId, userId];
   async function query() {
-    try {
-      const results = await queryDatabase(sql, params);
-      if (results.length === 0) {
-        res.json([]);
-        return;
-      }
-      res.json(results);
-    } catch (err) {
-      next(err);
+    const results = await queryDatabase(sql, params);
+    if (results.length === 0) {
+      res.json([]);
+      return;
     }
+    res.json(results);
   }
-  query();
+  query()
+    .catch(err => {
+      next(err);
+    });
 });
 
 app.get('/api/inventory/:userId', (req, res, next) => {
@@ -173,18 +170,17 @@ app.get('/api/inventory/:userId', (req, res, next) => {
   `;
   const params = [userId];
   async function query() {
-    try {
-      const results = await queryDatabase(sql, params);
-      if (results.length === 0) {
-        res.json([]);
-        return;
-      }
-      res.json(results);
-    } catch (err) {
-      next(err);
+    const results = await queryDatabase(sql, params);
+    if (results.length === 0) {
+      res.json([]);
+      return;
     }
+    res.json(results);
   }
-  query();
+  query()
+    .catch(err => {
+      next(err);
+    });
 });
 
 app.get('/api/inventory/:userId/:articleType', (req, res, next) => {
@@ -207,18 +203,17 @@ app.get('/api/inventory/:userId/:articleType', (req, res, next) => {
   `;
   const params = [userId, articleTypeId];
   async function query() {
-    try {
-      const results = await queryDatabase(sql, params);
-      if (results.length === 0) {
-        res.json([]);
-        return;
-      }
-      res.json(results);
-    } catch (err) {
-      next(err);
+    const results = await queryDatabase(sql, params);
+    if (results.length === 0) {
+      res.json([]);
+      return;
     }
+    res.json(results);
   }
-  query();
+  query()
+    .catch(err => {
+      next(err);
+    });
 });
 
 app.get('/api/inventory/:userId/:articleType/:color', (req, res, next) => {
@@ -258,26 +253,25 @@ app.get('/api/inventory/:userId/:articleType/:color', (req, res, next) => {
   `;
   const params = [userId, articleTypeId, colorId];
   async function query() {
-    try {
-      const results = await queryDatabase(sql, params);
-      if (results.length === 0) {
-        res.json([{
-          imgUrl: `images/${articleType}Placeholder.png`,
-          articleId: 0,
-          articleTypeId,
-          isPlaceholder: true,
-          isInitialPlaceholder: false,
-          primaryColor: 'white',
-          secondaryColor: 'white'
-        }]);
-        return;
-      }
-      res.json(results);
-    } catch (err) {
-      next(err);
+    const results = await queryDatabase(sql, params);
+    if (results.length === 0) {
+      res.json([{
+        imgUrl: `images/${articleType}Placeholder.png`,
+        articleId: 0,
+        articleTypeId,
+        isPlaceholder: true,
+        isInitialPlaceholder: false,
+        primaryColor: 'white',
+        secondaryColor: 'white'
+      }]);
+      return;
     }
+    res.json(results);
   }
-  query();
+  query()
+    .catch(err => {
+      next(err);
+    });
 });
 
 app.get('/api/outfits/:userId', (req, res, next) => {
@@ -298,18 +292,17 @@ app.get('/api/outfits/:userId', (req, res, next) => {
   `;
   const params = [userId];
   async function query() {
-    try {
-      const results = await queryDatabase(sql, params);
-      if (results.length === 0) {
-        res.json([]);
-        return;
-      }
-      res.json(results);
-    } catch (err) {
-      next(err);
+    const results = await queryDatabase(sql, params);
+    if (results.length === 0) {
+      res.json([]);
+      return;
     }
+    res.json(results);
   }
-  query();
+  query()
+    .catch(err => {
+      next(err);
+    });
 });
 
 app.use(errorMiddleware);

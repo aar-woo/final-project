@@ -15,49 +15,52 @@ export default class Inventory extends React.Component {
     this.handleDelete = this.handleDelete.bind(this);
   }
 
-  componentDidMount() {
+  async componentDidMount() {
     const userId = this.context.user.userId;
     const token = this.context.token;
-
-    fetch(`/api/inventory/${userId}`, {
-      headers: {
-        'x-access-token': token
-      }
-    })
-      .then(res => res.json())
-      .then(articles => this.setState({
+    try {
+      const response = await fetch(`/api/inventory/${userId}`, {
+        headers: {
+          'x-access-token': token
+        }
+      });
+      const articles = await response.json();
+      this.setState({
         articles,
         isLoading: false
-      }))
-      .catch(err => {
-        console.error(err);
-        this.setState({
-          isLoading: false,
-          networkError: true
-        });
       });
+    } catch (err) {
+      console.error(err);
+      this.setState({
+        isLoading: false,
+        networkError: true
+      });
+    }
   }
 
-  handleTypeSelect(event) {
+  async handleTypeSelect(event) {
     const articleType = event.target.value;
     const userId = this.context.user.userId;
     const token = this.context.token;
     let url;
     articleType === 'articles' ? url = '' : url = articleType;
-    fetch(`/api/inventory/${userId}/${url}`, {
-      headers: {
-        'x-access-token': token
-      }
-    })
-      .then(res => res.json())
-      .then(articles => this.setState({
+    try {
+      const response = await fetch(`/api/inventory/${userId}/${url}`, {
+        headers: {
+          'x-access-token': token
+        }
+      });
+      const articles = await response.json();
+      this.setState({
         articles,
         articleType
-      }))
-      .catch(err => console.error(err));
+      });
+    } catch (err) {
+      console.error(err);
+    }
   }
 
-  handleDelete(event) {
+  async handleDelete(event) {
     const articleId = parseInt(event.target.getAttribute('datakey'));
     const token = this.context.token;
     let articleIndex;
@@ -66,19 +69,19 @@ export default class Inventory extends React.Component {
         articleIndex = i;
       }
     }
-    fetch(`/api/inventory/${articleId}`, {
-      method: 'DELETE',
-      headers: {
-        'x-access-token': token
-      }
-    })
-      .then(res => res.text())
-      .then(res => {
-        const articlesCopy = this.state.articles.slice();
-        articlesCopy.splice(articleIndex, 1);
-        this.setState({ articles: articlesCopy });
-      })
-      .catch(err => console.error(err));
+    try {
+      await fetch(`/api/inventory/${articleId}`, {
+        method: 'DELETE',
+        headers: {
+          'x-access-token': token
+        }
+      });
+      const articlesCopy = this.state.articles.slice();
+      articlesCopy.splice(articleIndex, 1);
+      this.setState({ articles: articlesCopy });
+    } catch (err) {
+      console.error(err);
+    }
   }
 
   renderPage() {

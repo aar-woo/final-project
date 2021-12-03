@@ -42,6 +42,7 @@ export default class ArticleOptions extends React.Component {
     const articleType = this.props.articleType;
     const userId = this.context.user.userId;
     const token = this.context.token;
+
     fetch(`/api/inventory/${userId}/${articleType}/${colorCategory}`, {
       headers: {
         'x-access-token': token
@@ -93,26 +94,26 @@ export default class ArticleOptions extends React.Component {
     this.props.getArticle(this.state.currentArticle);
   }
 
-  clearState() {
-    this.setState({
-      articleOptions: [
-        {
-          imgUrl: `images/${this.props.articleType}Placeholder.png`,
-          articleId: 0,
-          isPlaceholder: true,
-          isInitialPlaceholder: true
-        }
-      ],
-      activeIndex: 0,
-      colorCategory: '',
-      currentArticle: {
-        imgUrl: `images/${this.props.articleType}Placeholder.png`,
-        articleId: 0,
-        isPlaceholder: true,
-        isInitialPlaceholder: true
-      }
-    });
-  }
+  // clearState() {
+  //   this.setState({
+  //     articleOptions: [
+  //       {
+  //         imgUrl: `images/${this.props.articleType}Placeholder.png`,
+  //         articleId: 0,
+  //         isPlaceholder: true,
+  //         isInitialPlaceholder: true
+  //       }
+  //     ],
+  //     activeIndex: 0,
+  //     colorCategory: '',
+  //     currentArticle: {
+  //       imgUrl: `images/${this.props.articleType}Placeholder.png`,
+  //       articleId: 0,
+  //       isPlaceholder: true,
+  //       isInitialPlaceholder: true
+  //     }
+  //   });
+  // }
 
   onLoad() {
     this.setState({

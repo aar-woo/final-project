@@ -17,29 +17,37 @@ export default class OutfitsPage extends React.Component {
     };
   }
 
-  componentDidMount() {
+  async componentDidMount() {
     const userId = this.context.user.userId;
     const token = this.context.token;
 
-    fetch(`/api/outfits/${userId}`, {
-      headers: {
-        'x-access-token': token
-      }
-    })
-      .then(res => res.json())
-      .then(outfits => {
-        this.setState({
-          outfits,
-          isLoading: false
-        });
-      })
-      .catch(err => {
-        console.error(err);
-        this.setState({
-          isLoading: false,
-          networkError: true
-        });
+    try {
+      const response = await fetch(`/api/outfits/${userId}`, {
+        headers: {
+          'x-access-token': token
+        }
       });
+      const outfits = await response.json();
+      const outfitsArr = [];
+      let currOutfit = [];
+      for (let i = 0; i < outfits.length; i++) {
+        currOutfit.push(outfits[i]);
+        if (currOutfit.length === 3) {
+          outfitsArr.push(currOutfit);
+          currOutfit = [];
+        }
+      }
+      this.setState({
+        outfits: outfitsArr,
+        isLoading: false
+      });
+    } catch (err) {
+      console.error(err);
+      this.setState({
+        isLoading: false,
+        networkError: true
+      });
+    }
   }
 
   renderPage() {

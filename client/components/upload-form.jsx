@@ -154,7 +154,7 @@ export default class UploadForm extends React.Component {
     }
   }
 
-  handleSubmit(event) {
+  async handleSubmit(event) {
     event.preventDefault();
     const formData = new FormData();
     const token = this.context.token;
@@ -166,37 +166,36 @@ export default class UploadForm extends React.Component {
     formData.append('articleTypeId', this.state.articleTypeId);
     formData.append('image', this.state.imgFile);
 
-    fetch('/api/inventory', {
-      method: 'POST',
-      headers: {
-        'x-access-token': token
-      },
-      body: formData
-    })
-      .then(result => result.json())
-      .then(data => {
-        this.setState({
-          img: 'images/hoodiePlaceholder.png',
-          imgFile: null,
-          imgLoaded: true,
-          primaryColor: '',
-          secondaryColor: '',
-          colorCategory: 'Color',
-          colorCategoryId: null,
-          secondaryColorCategory: 'Color',
-          secondaryColorCategoryId: null,
-          articleType: '',
-          articleTypeId: null,
-          colorCategorySelect: 'Primary'
-        });
-        this.fileInputRef.current.value = null;
-      })
-      .catch(err => {
-        console.error(err);
-        this.setState({
-          networkError: true
-        });
+    try {
+      const response = await fetch('/api/inventory', {
+        method: 'POST',
+        headers: {
+          'x-access-token': token
+        },
+        body: formData
       });
+      await response.json();
+      this.setState({
+        img: 'images/hoodiePlaceholder.png',
+        imgFile: null,
+        imgLoaded: true,
+        primaryColor: '',
+        secondaryColor: '',
+        colorCategory: 'Color',
+        colorCategoryId: null,
+        secondaryColorCategory: 'Color',
+        secondaryColorCategoryId: null,
+        articleType: '',
+        articleTypeId: null,
+        colorCategorySelect: 'Primary'
+      });
+      this.fileInputRef.current.value = null;
+    } catch (err) {
+      console.error(err);
+      this.setState({
+        networkError: true
+      });
+    }
   }
 
   render() {

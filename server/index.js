@@ -22,27 +22,31 @@ app.use(staticMiddleware);
 
 app.use(express.json());
 
+async function queryDatabase(sql, params) {
+  const results = await db.query(sql, params);
+  return results.rows;
+}
+
 app.post('/api/auth/sign-up', (req, res, next) => {
   const { username, password } = req.body;
   if (!username || !password) {
     throw new ClientError(400, 'username and password are required');
   }
-  argon2
-    .hash(password)
-    .then(hashedPassword => {
-      const sql = `
+  async function signUp() {
+    const hashedPassword = await argon2.hash(password);
+    const sql = `
       insert into "users" ("username", "password")
         values ($1, $2)
         returning "userId", "username"
       `;
-      const params = [username, hashedPassword];
-      return db.query(sql, params);
-    })
-    .then(result => {
-      const [user] = result.rows;
-      res.status(201).json(user);
-    })
-    .catch(err => next(err));
+    const params = [username, hashedPassword];
+    const [newUser] = await queryDatabase(sql, params);
+    res.status(201).json(newUser);
+  }
+  signUp()
+    .catch(err => {
+      next(err);
+    });
 });
 
 app.post('/api/auth/sign-in', (req, res, next) => {
@@ -57,25 +61,24 @@ app.post('/api/auth/sign-in', (req, res, next) => {
      where "username" = $1
   `;
   const params = [username];
-  db.query(sql, params)
-    .then(result => {
-      const [user] = result.rows;
-      if (!user) {
-        throw new ClientError(401, 'invalid login');
-      }
-      const { userId, password } = user;
-      return argon2
-        .verify(password, userPassword)
-        .then(isMatching => {
-          if (!isMatching) {
-            throw new ClientError(401, 'invalid login');
-          }
-          const payload = { userId, username };
-          const token = jwt.sign(payload, process.env.TOKEN_SECRET);
-          res.json({ token, user: payload });
-        });
-    })
-    .catch(err => next(err));
+  async function authenticate() {
+    const [user] = await queryDatabase(sql, params);
+    if (!user) {
+      throw new ClientError(401, 'invalid login');
+    }
+    const { userId, password } = user;
+    const verified = await argon2.verify(password, userPassword);
+    if (!verified) {
+      throw new ClientError(401, 'invalid login');
+    }
+    const payload = { userId, username };
+    const token = jwt.sign(payload, process.env.TOKEN_SECRET);
+    res.json({ token, user: payload });
+  }
+  authenticate()
+    .catch(err => {
+      next(err);
+    });
 });
 
 app.use(authorizationMiddleware);
@@ -96,12 +99,14 @@ app.post('/api/inventory', uploadsMiddleware, (req, res, next) => {
                 returning *
   `;
   const params = [userId, imgUrl, articleTypeId, primaryColor, secondaryColor, colorCategoryId, secondaryColorCategoryId];
-  db.query(sql, params)
-    .then(result => {
-      const [articles] = result.rows;
-      res.status(201).json(articles);
-    })
-    .catch(err => next(err));
+  async function query() {
+    const results = await queryDatabase(sql, params);
+    res.status(201).json(results);
+  }
+  query()
+    .catch(err => {
+      next(err);
+    });
 });
 
 app.delete('/api/inventory/:articleId', (req, res, next) => {
@@ -114,15 +119,17 @@ app.delete('/api/inventory/:articleId', (req, res, next) => {
       returning *;
   `;
   const params = [articleId, userId];
-  db.query(sql, params)
-    .then(result => {
-      const [article] = result.rows;
-      if (!article) {
-        throw new ClientError(404, 'Article not found.');
-      }
-      res.status(204).json(article);
-    })
-    .catch(err => next(err));
+  async function query() {
+    const results = await queryDatabase(sql, params);
+    if (!results) {
+      throw new ClientError(404, 'Article not found.');
+    }
+    res.status(204).json(results);
+  }
+  query()
+    .catch(err => {
+      next(err);
+    });
 });
 
 app.post('/api/outfits', (req, res, next) => {
@@ -137,12 +144,18 @@ app.post('/api/outfits', (req, res, next) => {
       returning *
   `;
   const params = [topArticleId, bottomArticleId, shoesArticleId, userId];
-  db.query(sql, params)
-    .then(result => {
-      const [outfit] = result.rows;
-      res.status(201).json(outfit);
-    })
-    .catch(err => next(err));
+  async function query() {
+    const results = await queryDatabase(sql, params);
+    if (results.length === 0) {
+      res.json([]);
+      return;
+    }
+    res.json(results);
+  }
+  query()
+    .catch(err => {
+      next(err);
+    });
 });
 
 app.get('/api/inventory/:userId', (req, res, next) => {
@@ -156,15 +169,18 @@ app.get('/api/inventory/:userId', (req, res, next) => {
       where "userId" = $1
   `;
   const params = [userId];
-  db.query(sql, params)
-    .then(result => {
-      if (result.rows.length === 0) {
-        res.json([]);
-        return;
-      }
-      res.json(result.rows);
-    })
-    .catch(err => next(err));
+  async function query() {
+    const results = await queryDatabase(sql, params);
+    if (results.length === 0) {
+      res.json([]);
+      return;
+    }
+    res.json(results);
+  }
+  query()
+    .catch(err => {
+      next(err);
+    });
 });
 
 app.get('/api/inventory/:userId/:articleType', (req, res, next) => {
@@ -186,15 +202,18 @@ app.get('/api/inventory/:userId/:articleType', (req, res, next) => {
         AND "articleTypeId" = $2
   `;
   const params = [userId, articleTypeId];
-  db.query(sql, params)
-    .then(result => {
-      if (result.rows.length === 0) {
-        res.json([]);
-        return;
-      }
-      res.json(result.rows);
-    })
-    .catch(err => next(err));
+  async function query() {
+    const results = await queryDatabase(sql, params);
+    if (results.length === 0) {
+      res.json([]);
+      return;
+    }
+    res.json(results);
+  }
+  query()
+    .catch(err => {
+      next(err);
+    });
 });
 
 app.get('/api/inventory/:userId/:articleType/:color', (req, res, next) => {
@@ -233,23 +252,26 @@ app.get('/api/inventory/:userId/:articleType/:color', (req, res, next) => {
     AND ("colorCategoryId" = $3 OR "secondaryColorCategoryId" = $3);
   `;
   const params = [userId, articleTypeId, colorId];
-  db.query(sql, params)
-    .then(result => {
-      if (result.rows.length === 0) {
-        res.json([{
-          imgUrl: `images/${articleType}Placeholder.png`,
-          articleId: 0,
-          articleTypeId,
-          isPlaceholder: true,
-          isInitialPlaceholder: false,
-          primaryColor: 'white',
-          secondaryColor: 'white'
-        }]);
-        return;
-      }
-      res.json(result.rows);
-    })
-    .catch(err => next(err));
+  async function query() {
+    const results = await queryDatabase(sql, params);
+    if (results.length === 0) {
+      res.json([{
+        imgUrl: `images/${articleType}Placeholder.png`,
+        articleId: 0,
+        articleTypeId,
+        isPlaceholder: true,
+        isInitialPlaceholder: false,
+        primaryColor: 'white',
+        secondaryColor: 'white'
+      }]);
+      return;
+    }
+    res.json(results);
+  }
+  query()
+    .catch(err => {
+      next(err);
+    });
 });
 
 app.get('/api/outfits/:userId', (req, res, next) => {
@@ -269,26 +291,18 @@ app.get('/api/outfits/:userId', (req, res, next) => {
     order by "o"."outfitId"
   `;
   const params = [userId];
-  db.query(sql, params)
-    .then(result => {
-      if (result.rows.length === 0) {
-        res.json([]);
-        return;
-      }
-      const articlesData = result.rows;
-      const outfitsArr = [];
-      let currOutfit = [];
-      for (let i = 0; i < articlesData.length; i++) {
-        currOutfit.push(articlesData[i]);
-        if (currOutfit.length === 3) {
-          outfitsArr.push(currOutfit);
-          currOutfit = [];
-        }
-      }
-      res.json(outfitsArr);
-
-    })
-    .catch(err => next(err));
+  async function query() {
+    const results = await queryDatabase(sql, params);
+    if (results.length === 0) {
+      res.json([]);
+      return;
+    }
+    res.json(results);
+  }
+  query()
+    .catch(err => {
+      next(err);
+    });
 });
 
 app.use(errorMiddleware);

@@ -36,26 +36,27 @@ export default class PickerPage extends React.Component {
     }
   }
 
-  addOutfit() {
+  async addOutfit() {
     const token = this.context.token;
-    fetch('/api/outfits', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'x-access-token': token
-      },
-      body: JSON.stringify(this.state)
-    })
-      .then(res => res.json())
-      .then(data => {
-        this.setState({
-          topArticleId: null,
-          bottomArticleId: null,
-          shoesArticleId: null,
-          outfitOptionKey: this.state.outfitOptionKey + 1
-        });
-      })
-      .catch(err => console.error(err));
+    try {
+      const response = await fetch('/api/outfits', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-access-token': token
+        },
+        body: JSON.stringify(this.state)
+      });
+      await response.json();
+      this.setState({
+        topArticleId: null,
+        bottomArticleId: null,
+        shoesArticleId: null,
+        outfitOptionKey: this.state.outfitOptionKey + 1
+      });
+    } catch (err) {
+      console.error(err);
+    }
   }
 
   render() {

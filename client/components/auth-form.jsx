@@ -19,7 +19,7 @@ export default class AuthForm extends React.Component {
     });
   }
 
-  handleSubmit() {
+  async handleSubmit() {
     event.preventDefault();
     const { action } = this.props;
     const req = {
@@ -29,21 +29,20 @@ export default class AuthForm extends React.Component {
       },
       body: JSON.stringify(this.state)
     };
-    fetch(`/api/auth/${action}`, req)
-      .then(res => res.json())
-      .then(result => {
-        if (action === 'sign-up') {
-          window.location.hash = 'sign-in';
-        } else if (result.user && result.token) {
-          this.props.onSignIn(result);
-        }
-      })
-      .catch(err => {
-        console.error(err);
-        this.setState({
-          networkError: true
-        });
+    try {
+      const response = await fetch(`/api/auth/${action}`, req);
+      const result = await response.json();
+      if (action === 'sign-up') {
+        window.location.hash = 'sign-in';
+      } else if (result.user && result.token) {
+        this.props.onSignIn(result);
+      }
+    } catch (err) {
+      console.error(err);
+      this.setState({
+        networkError: true
       });
+    }
   }
 
   render() {

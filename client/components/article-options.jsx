@@ -37,33 +37,31 @@ export default class ArticleOptions extends React.Component {
     this.onLoad = this.onLoad.bind(this);
   }
 
-  handleColorSelect(event) {
+  async handleColorSelect(event) {
     const colorCategory = event.target.value;
     const articleType = this.props.articleType;
     const userId = this.context.user.userId;
     const token = this.context.token;
-
-    fetch(`/api/inventory/${userId}/${articleType}/${colorCategory}`, {
-      headers: {
-        'x-access-token': token
-      }
-    })
-      .then(res => res.json())
-      .then(articles => {
-        this.setState({
-          colorCategory,
-          activeIndex: 0,
-          articleOptions: articles,
-          currentArticle: articles[0],
-          articlesLoaded: false
-        });
-      })
-      .catch(err => {
-        console.error(err);
-        this.setState({
-          networkError: true
-        });
+    try {
+      const response = await fetch(`/api/inventory/${userId}/${articleType}/${colorCategory}`, {
+        headers: {
+          'x-access-token': token
+        }
       });
+      const articles = await response.json();
+      this.setState({
+        colorCategory,
+        activeIndex: 0,
+        articleOptions: articles,
+        currentArticle: articles[0],
+        articlesLoaded: false
+      });
+    } catch (err) {
+      console.error(err);
+      this.setState({
+        networkError: true
+      });
+    }
   }
 
   next() {
@@ -93,27 +91,6 @@ export default class ArticleOptions extends React.Component {
   selectArticle() {
     this.props.getArticle(this.state.currentArticle);
   }
-
-  // clearState() {
-  //   this.setState({
-  //     articleOptions: [
-  //       {
-  //         imgUrl: `images/${this.props.articleType}Placeholder.png`,
-  //         articleId: 0,
-  //         isPlaceholder: true,
-  //         isInitialPlaceholder: true
-  //       }
-  //     ],
-  //     activeIndex: 0,
-  //     colorCategory: '',
-  //     currentArticle: {
-  //       imgUrl: `images/${this.props.articleType}Placeholder.png`,
-  //       articleId: 0,
-  //       isPlaceholder: true,
-  //       isInitialPlaceholder: true
-  //     }
-  //   });
-  // }
 
   onLoad() {
     this.setState({

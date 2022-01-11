@@ -77,7 +77,7 @@ export default class UploadForm extends React.Component {
     const primaryColor = `rgb${colorThief.getRgb($img)}`;
     const secondaryColor = `rgb${colorThief.getPaletteRgb($img)[0]}`;
     const colorCategorized = categorizeColor(colorConvert.rgb.hsl(colorThief.getRgbArr($img)));
-    const secondaryColorCategorized = categorizeColor(colorThief.getSecondaryRgbArr($img));
+    const secondaryColorCategorized = categorizeColor(colorConvert.rgb.hsl(colorThief.getSecondaryRgbArr($img)));
 
     this.setState({
       imgLoaded: true,

@@ -1,23 +1,18 @@
 import React from 'react';
 import AppContext from '../lib/app-context';
 import { Spinner } from 'reactstrap';
+import { useContext, useEffect, useState } from 'react';
 
-export default class Inventory extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      articles: [],
-      articleType: 'articles',
-      isLoading: true,
-      networkError: false
-    };
-    this.handleTypeSelect = this.handleTypeSelect.bind(this);
-    this.handleDelete = this.handleDelete.bind(this);
-  }
+export default function Inventory(props) {
+  const [articles, setArticles] = useState([]);
+  const [articleType, setArticletype] = useState('articles');
+  const [isLoading, setLoading] = useState(true);
+  const [networkError, setNetworkError] = useState(false);
+  const { user } = useContext(AppContext);
+  const { token } = useContext(AppContext);
+  const userId = user.userId
 
-  async componentDidMount() {
-    const userId = this.context.user.userId;
-    const token = this.context.token;
+  useEffect(async () => {
     try {
       const response = await fetch(`/api/inventory/${userId}`, {
         headers: {
@@ -25,121 +20,86 @@ export default class Inventory extends React.Component {
         }
       });
       const articles = await response.json();
-      this.setState({
-        articles,
-        isLoading: false
-      });
+      setArticles(articles);
+      setLoading(false);
     } catch (err) {
       console.error(err);
-      this.setState({
-        isLoading: false,
-        networkError: true
-      });
+      setLoading(false);
+      setNetworkError(true);
     }
+  }, []);
+
+  // async handleTypeSelect(event) {
+  //   const articleType = event.target.value;
+  //   const userId = this.context.user.userId;
+  //   const token = this.context.token;
+  //   let url;
+  //   articleType === 'articles' ? url = '' : url = articleType;
+  //   try {
+  //     const response = await fetch(`/api/inventory/${userId}/${url}`, {
+  //       headers: {
+  //         'x-access-token': token
+  //       }
+  //     });
+  //     const articles = await response.json();
+  //     this.setState({
+  //       articles,
+  //       articleType
+  //     });
+  //   } catch (err) {
+  //     console.error(err);
+  //   }
+  // }
+
+  let emptyHeader = 'd-none';
+  if (articles.length === 0 && !isLoading && !networkError) {
+    emptyHeader = 'col-12 col-md-6 d-flex align-items-end justify-content-end mt-3';
   }
 
-  async handleTypeSelect(event) {
-    const articleType = event.target.value;
-    const userId = this.context.user.userId;
-    const token = this.context.token;
-    let url;
-    articleType === 'articles' ? url = '' : url = articleType;
-    try {
-      const response = await fetch(`/api/inventory/${userId}/${url}`, {
-        headers: {
-          'x-access-token': token
-        }
-      });
-      const articles = await response.json();
-      this.setState({
-        articles,
-        articleType
-      });
-    } catch (err) {
-      console.error(err);
-    }
+  let page;
+  if (isLoading) {
+    page = <Spinner className="mt-5 mx-auto"></Spinner>
   }
-
-  async handleDelete(event) {
-    const articleId = parseInt(event.target.getAttribute('datakey'));
-    const token = this.context.token;
-    let articleIndex;
-    for (let i = 0; i < this.state.articles.length; i++) {
-      if (this.state.articles[i].articleId === articleId) {
-        articleIndex = i;
-      }
-    }
-    try {
-      await fetch(`/api/inventory/${articleId}`, {
-        method: 'DELETE',
-        headers: {
-          'x-access-token': token
-        }
-      });
-      const articlesCopy = this.state.articles.slice();
-      articlesCopy.splice(articleIndex, 1);
-      this.setState({ articles: articlesCopy });
-    } catch (err) {
-      console.error(err);
-    }
+  if (networkError) {
+    page = <h4 className="mt-5 text-center">Sorry, there was an error connecting to the network!</h4>
   }
-
-  renderPage() {
-    if (this.state.isLoading) {
-      return (
-        <Spinner className="mt-5 mx-auto"></Spinner>
-      );
-    }
-    if (this.state.networkError) {
-      return (
-        <h4 className="mt-5 text-center">Sorry, there was an error connecting to the network!</h4>
-      );
-    }
-    if (this.state.articles.length === 0) {
-      let placeholderType;
-      if (this.state.articleType === 'articles') {
-        placeholderType = 'hoodie';
-      } else {
-        placeholderType = this.state.articleType;
-      }
-      return (
-        <NoArticles articleType={this.state.articleType} placeholderType={`images/${placeholderType}Placeholder.png`}/>
-      );
+  if (articles.length === 0) {
+    let placeholderType;
+    if (articleType === 'articles') {
+      placeholderType = 'hoodie';
     } else {
-      return (
-        <Articles inventoryState={this.state} handleTypeSelect={this.handleTypeSelect} handleDelete={this.handleDelete}/>
-      );
+      placeholderType = articleType;
     }
+    page = <NoArticles articleType={articleType} placeholderType={`images/${placeholderType}Placeholder.png`} />
+  } else {
+    page = <Articles articlesArray={articles} />
   }
 
-  render() {
-    let emptyHeader = 'd-none';
-    if (this.state.articles.length === 0 && !this.state.isLoading && !this.state.networkError) {
-      emptyHeader = 'col-12 col-md-6 d-flex align-items-end justify-content-end mt-3';
-    }
-    return (
-      <>
-        <div className="container">
-          <div className="row mx-md-3 mx-lg-4 mx-xl-5">
-            <div className="col-12 col-md-6 ps-lg-1 ps-xxl-4">
-              <select className="form-select mt-4" onChange={this.handleTypeSelect}>
-                <option value='articles'>Article Type</option>
-                <option value="articles">All articles</option>
-                <option value="tops">Tops</option>
-                <option value="bottoms">Bottoms</option>
-                <option value="shoes">Shoes</option>
-              </select>
-            </div>
-            <NoArticlesHeader classes={emptyHeader} articleType={this.state.articleType} />
+  return (
+    <>
+      <div className="container">
+        <div className="row mx-md-3 mx-lg-4 mx-xl-5">
+          <div className="col-12 col-md-6 ps-lg-1 ps-xxl-4">
+            <select className="form-select mt-4">
+              <option value='articles'>Article Type</option>
+              <option value="articles">All articles</option>
+              <option value="tops">Tops</option>
+              <option value="bottoms">Bottoms</option>
+              <option value="shoes">Shoes</option>
+            </select>
           </div>
-          <div className="row">
-            {this.renderPage()}
-          </div>
+          <NoArticlesHeader classes={emptyHeader} articleType={articleType} />
         </div>
-      </>
-    );
-  }
+        <div className="row">
+          {page}
+        </div>
+      </div>
+    </>
+  );
 }
+
+
+
 
 function Article(props) {
   const { articleId, imgUrl, primaryColor, secondaryColor, isPlaceholder } = props.articleInfo;
@@ -170,7 +130,7 @@ function Article(props) {
 }
 
 function Articles(props) {
-  const { articles } = props.inventoryState;
+  const articles = props.articlesArray;
   return (
     <>
       {
@@ -208,4 +168,4 @@ function NoArticlesHeader(props) {
   );
 }
 
-Inventory.contextType = AppContext;
+// Inventory.contextType = AppContext;

@@ -1,7 +1,6 @@
-import React from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import AppContext from '../lib/app-context';
 import { Spinner } from 'reactstrap';
-import { useContext, useEffect, useState } from 'react';
 
 export default function Inventory(props) {
   const [articles, setArticles] = useState([]);
@@ -10,7 +9,7 @@ export default function Inventory(props) {
   const [networkError, setNetworkError] = useState(false);
   const { user } = useContext(AppContext);
   const { token } = useContext(AppContext);
-  const userId = user.userId
+  const userId = user.userId;
 
   useEffect(async () => {
     try {
@@ -29,27 +28,21 @@ export default function Inventory(props) {
     }
   }, []);
 
-  // async handleTypeSelect(event) {
-  //   const articleType = event.target.value;
-  //   const userId = this.context.user.userId;
-  //   const token = this.context.token;
-  //   let url;
-  //   articleType === 'articles' ? url = '' : url = articleType;
-  //   try {
-  //     const response = await fetch(`/api/inventory/${userId}/${url}`, {
-  //       headers: {
-  //         'x-access-token': token
-  //       }
-  //     });
-  //     const articles = await response.json();
-  //     this.setState({
-  //       articles,
-  //       articleType
-  //     });
-  //   } catch (err) {
-  //     console.error(err);
-  //   }
-  // }
+  useEffect(async () => {
+    let url;
+    articleType === 'articles' ? url = '' : url = articleType;
+    try {
+      const response = await fetch(`/api/inventory/${userId}/${url}`, {
+        headers: {
+          'x-access-token': token
+        }
+      });
+      const articles = await response.json();
+      setArticles(articles);
+    } catch (err) {
+      console.error(err);
+    }
+  }, [articleType]);
 
   let emptyHeader = 'd-none';
   if (articles.length === 0 && !isLoading && !networkError) {
@@ -58,10 +51,10 @@ export default function Inventory(props) {
 
   let page;
   if (isLoading) {
-    page = <Spinner className="mt-5 mx-auto"></Spinner>
+    page = <Spinner className="mt-5 mx-auto"></Spinner>;
   }
   if (networkError) {
-    page = <h4 className="mt-5 text-center">Sorry, there was an error connecting to the network!</h4>
+    page = <h4 className="mt-5 text-center">Sorry, there was an error connecting to the network!</h4>;
   }
   if (articles.length === 0) {
     let placeholderType;
@@ -70,9 +63,9 @@ export default function Inventory(props) {
     } else {
       placeholderType = articleType;
     }
-    page = <NoArticles articleType={articleType} placeholderType={`images/${placeholderType}Placeholder.png`} />
+    page = <NoArticles articleType={articleType} placeholderType={`images/${placeholderType}Placeholder.png`} />;
   } else {
-    page = <Articles articlesArray={articles} />
+    page = <Articles articlesArray={articles} />;
   }
 
   return (
@@ -80,7 +73,7 @@ export default function Inventory(props) {
       <div className="container">
         <div className="row mx-md-3 mx-lg-4 mx-xl-5">
           <div className="col-12 col-md-6 ps-lg-1 ps-xxl-4">
-            <select className="form-select mt-4">
+            <select className="form-select mt-4" onChange={() => setArticletype(event.target.value)}>
               <option value='articles'>Article Type</option>
               <option value="articles">All articles</option>
               <option value="tops">Tops</option>
@@ -97,9 +90,6 @@ export default function Inventory(props) {
     </>
   );
 }
-
-
-
 
 function Article(props) {
   const { articleId, imgUrl, primaryColor, secondaryColor, isPlaceholder } = props.articleInfo;
@@ -167,5 +157,3 @@ function NoArticlesHeader(props) {
     </div>
   );
 }
-
-// Inventory.contextType = AppContext;

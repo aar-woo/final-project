@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState, useRef } from 'react';
 import AppContext from '../lib/app-context';
 import { Spinner } from 'reactstrap';
 
@@ -7,9 +7,11 @@ export default function Inventory(props) {
   const [articleType, setArticletype] = useState('articles');
   const [isLoading, setLoading] = useState(true);
   const [networkError, setNetworkError] = useState(false);
+  const [articleToDelete, setArticleToDelete] = useState('none');
   const { user } = useContext(AppContext);
   const { token } = useContext(AppContext);
   const userId = user.userId;
+  const initialRender = useRef(true);
 
   useEffect(async () => {
     try {
@@ -44,6 +46,33 @@ export default function Inventory(props) {
     }
   }, [articleType]);
 
+  useEffect(async () => {
+    if (initialRender.current) {
+      initialRender.current = false;
+      return;
+    }
+    const articleId = articleToDelete;
+    let articleIndex;
+    for (let i = 0; i < articles.length; i++) {
+      if (articles[i].articleId === articleId) {
+        articleIndex = i;
+      }
+    }
+    try {
+      await fetch(`/api/inventory/${articleId}`, {
+        method: 'DELETE',
+        headers: {
+          'x-access-token': token
+        }
+      });
+      const articlesCopy = articles.slice();
+      articlesCopy.splice(articleIndex, 1);
+      setArticles(articlesCopy);
+    } catch (err) {
+      console.error(err);
+    }
+  }, [articleToDelete]);
+
   let emptyHeader = 'd-none';
   if (articles.length === 0 && !isLoading && !networkError) {
     emptyHeader = 'col-12 col-md-6 d-flex align-items-end justify-content-end mt-3';
@@ -65,7 +94,7 @@ export default function Inventory(props) {
     }
     page = <NoArticles articleType={articleType} placeholderType={`images/${placeholderType}Placeholder.png`} />;
   } else {
-    page = <Articles articlesArray={articles} />;
+    page = <Articles articlesArray={articles} handleDelete={() => setArticleToDelete(parseInt(event.target.getAttribute('datakey')))}/>;
   }
 
   return (

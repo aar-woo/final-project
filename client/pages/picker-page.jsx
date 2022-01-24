@@ -1,88 +1,78 @@
-import React from 'react';
+import React, { useContext, useState } from 'react';
 import Navbar from '../components/navbar';
 import AppDrawer from '../components/app-drawer';
 import ArticleOptions from '../components/article-options';
 import AppContext from '../lib/app-context';
 import Redirect from '../components/redirect';
 
-export default class PickerPage extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      topArticleId: null,
-      bottomArticleId: null,
-      shoesArticleId: null,
-      outfitOptionKey: 0
-    };
-    this.handleCurrentArticle = this.handleCurrentArticle.bind(this);
-    this.addOutfit = this.addOutfit.bind(this);
+export default function PickerPage(props) {
+  const [topId, setTopId] = useState(null);
+  const [bottomId, setBottomId] = useState(null);
+  const [shoesId, setShoesId] = useState(null);
+  const [outfitKey, setOutfitKey] = useState(0);
+  const { user } = useContext(AppContext);
+  const { token } = useContext(AppContext);
+
+  if (!user) return <Redirect to="sign-in" />;
+
+  let addBtnClass;
+  if (topId && bottomId && shoesId) {
+    addBtnClass = 'btn btn-primary mt-3 shadow';
+  } else {
+    addBtnClass = 'btn btn-primary mt-3 disabled';
   }
 
-  handleCurrentArticle(currentArticle) {
+  function handleCurrentArticle(currentArticle) {
     const articleTypeId = currentArticle.articleTypeId;
     const articleId = currentArticle.articleId;
     if (articleTypeId === 1) {
-      this.setState({
-        topArticleId: articleId
-      });
+      setTopId(articleId);
     } else if (articleTypeId === 2) {
-      this.setState({
-        bottomArticleId: articleId
-      });
+      setBottomId(articleId);
     } else if (articleTypeId === 3) {
-      this.setState({
-        shoesArticleId: articleId
-      });
+      setShoesId(articleId);
     }
   }
 
-  async addOutfit() {
-    const token = this.context.token;
+  async function addOutfit() {
     try {
+      const outfitIds = {
+        topArticleId: topId,
+        bottomArticleId: bottomId,
+        shoesArticleId: shoesId
+      };
       const response = await fetch('/api/outfits', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           'x-access-token': token
         },
-        body: JSON.stringify(this.state)
+        body: JSON.stringify(outfitIds)
       });
       await response.json();
-      this.setState({
-        topArticleId: null,
-        bottomArticleId: null,
-        shoesArticleId: null,
-        outfitOptionKey: this.state.outfitOptionKey + 1
-      });
+      setTopId(null);
+      setBottomId(null);
+      setShoesId(null);
+      setOutfitKey(prevOutfitKey => outfitKey + 1);
     } catch (err) {
       console.error(err);
     }
   }
 
-  render() {
-    if (!this.context.user) return <Redirect to="sign-in" />;
-
-    let addBtnClass;
-    if (this.state.topArticleId && this.state.bottomArticleId && this.state.shoesArticleId) {
-      addBtnClass = 'btn btn-primary mt-3 shadow';
-    } else {
-      addBtnClass = 'btn btn-primary mt-3 disabled';
-    }
-    return (
-      <>
-        <Navbar pageHeader='Outfit Picker' />
-        <AppDrawer />
-        <div className="container mt-4">
-          <OutfitOption key={this.state.outfitOptionKey} handleCurrentArticle={this.handleCurrentArticle}/>
-          <div className="row my-3">
-            <div className="col-12 d-flex justify-content-center">
-              <button className={addBtnClass} onClick={this.addOutfit}>Add to Outfits</button>
-            </div>
+  return (
+    <>
+      <Navbar pageHeader='Outfit Picker' />
+      <AppDrawer />
+      <div className="container mt-4">
+        <OutfitOption key={outfitKey} handleCurrentArticle={handleCurrentArticle} />
+        <div className="row my-3">
+          <div className="col-12 d-flex justify-content-center">
+            <button className={addBtnClass} onClick={addOutfit}>Add to Outfits</button>
           </div>
         </div>
-      </>
-    );
-  }
+      </div>
+    </>
+  );
 }
 
 function OutfitOption(props) {
@@ -94,5 +84,3 @@ function OutfitOption(props) {
     </>
   );
 }
-
-PickerPage.contextType = AppContext;
